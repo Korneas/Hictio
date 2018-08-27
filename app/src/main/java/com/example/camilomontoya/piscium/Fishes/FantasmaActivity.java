@@ -1,4 +1,4 @@
-package com.example.camilomontoya.piscium;
+package com.example.camilomontoya.piscium.Fishes;
 
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.example.camilomontoya.piscium.R;
 
 public class FantasmaActivity extends AppCompatActivity {
 

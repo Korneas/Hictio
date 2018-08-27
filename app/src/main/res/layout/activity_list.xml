@@ -4,18 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fishes.SapoaraActivity">
+    tools:context=".ListActivity">
 
-    <TextView
-        android:id="@+id/textSapoara"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sapoara"
-        android:textColor="@color/colorAccentPiscium"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ListView
+        android:id="@+id/fishList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 </android.support.constraint.ConstraintLayout>

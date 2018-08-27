@@ -1,6 +1,7 @@
-package com.example.camilomontoya.piscium;
+package com.example.camilomontoya.piscium.Fishes;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -12,9 +13,12 @@ import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.camilomontoya.piscium.R;
+
 public class SapoaraActivity extends AppCompatActivity {
 
     public static final String TAG = "SapoaraActivity";
+    private boolean out;
 
     private Chronometer chrono;
 
@@ -54,7 +58,7 @@ public class SapoaraActivity extends AppCompatActivity {
         new Thread() {
             @Override
             public void run() {
-                while (count < 30) {
+                while (count < 30 && !out) {
                     try {
                         Thread.sleep(1000);
                         for (int i = 0; i < 3; i++) {
@@ -105,7 +109,7 @@ public class SapoaraActivity extends AppCompatActivity {
             float delta = acelVal - acelLast;
             shake = shake * 0.9f + delta;
 
-            if (shake > 8 && mp.isPlaying() && active) {
+            if (shake > 3 && mp.isPlaying() && active) {
                 // Accion a hacer al agitar
                 Toast.makeText(getApplicationContext(), "Prrro me agitaste", Toast.LENGTH_SHORT).show();
                 active = false;
@@ -127,4 +131,13 @@ public class SapoaraActivity extends AppCompatActivity {
 
         }
     };
+
+    /**
+     * Metodo para salir de la app si se esta en la actividad y devolverlo a la lista
+     */
+    @Override
+    public void onBackPressed() {
+        out = true;
+        finish();
+    }
 }

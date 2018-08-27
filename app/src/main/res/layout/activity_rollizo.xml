@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fishes.SapoaraActivity">
+    tools:context=".Fishes.RollizoActivity">
 
     <TextView
-        android:id="@+id/textSapoara"
+        android:id="@+id/textRollizo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sapoara"
+        android:text="Rollizo"
         android:textColor="@color/colorAccentPiscium"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"

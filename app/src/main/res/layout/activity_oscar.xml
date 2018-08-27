@@ -4,22 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fishes.FantasmaActivity">
+    tools:context=".Fishes.OscarActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/fantasma_layout">
+        android:id="@+id/oscar_layout">
 
 
         <TextView
-            android:id="@+id/textFantasma"
+            android:id="@+id/textOscar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textColor="@color/colorAccentPiscium"
             android:textSize="20dp"
-            android:text="Fantasma Negro" />
+            android:text="Oscar" />
     </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

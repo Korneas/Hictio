@@ -1,10 +1,12 @@
-package com.example.camilomontoya.piscium;
+package com.example.camilomontoya.piscium.Fishes;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.example.camilomontoya.piscium.R;
 
 public class MojarraActivity extends AppCompatActivity {
 

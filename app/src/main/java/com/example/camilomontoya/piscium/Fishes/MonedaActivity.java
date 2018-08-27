@@ -1,4 +1,4 @@
-package com.example.camilomontoya.piscium;
+package com.example.camilomontoya.piscium.Fishes;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.camilomontoya.piscium.R;
 
 public class MonedaActivity extends AppCompatActivity {
 
@@ -66,7 +68,7 @@ public class MonedaActivity extends AppCompatActivity {
             }
 
             if(pullout){
-                if(z < -4){
+                if(z < -1){
                     Toast.makeText(getApplicationContext(), "Prrro me atrapaste", Toast.LENGTH_SHORT).show();
                     pullout = false;
                     ((Vibrator)getSystemService(VIBRATOR_SERVICE)).cancel();

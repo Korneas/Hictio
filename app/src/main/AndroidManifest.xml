@@ -18,11 +18,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SapoaraActivity" />
-        <activity android:name=".MojarraActivity" />
-        <activity android:name=".FantasmaActivity" />
-        <activity android:name=".MonedaActivity" />
-        <activity android:name=".BocachicoActivity"></activity>
+        <activity android:name=".Fishes.SapoaraActivity" />
+        <activity android:name=".Fishes.MojarraActivity" />
+        <activity android:name=".Fishes.FantasmaActivity" />
+        <activity android:name=".Fishes.MonedaActivity" />
+        <activity android:name=".Fishes.BocachicoActivity" />
+        <activity android:name=".Fishes.OscarActivity" />
+        <activity android:name=".ListActivity" />
+        <activity android:name=".Fishes.DiscoActivity" />
+        <activity android:name=".Fishes.LeporinoActivity" />
+        <activity android:name=".Fishes.PiranhaActivity" />
+        <activity android:name=".Fishes.RollizoActivity"></activity>
     </application>
 
 </manifest>
