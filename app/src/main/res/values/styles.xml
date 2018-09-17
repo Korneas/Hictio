@@ -8,11 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="PisciumTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="HictioTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimaryPiscium</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDarkPiscium</item>
-        <item name="colorAccent">@color/colorAccentPiscium</item>
+        <item name="colorPrimary">@color/colorPrimaryHictio</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkHictio</item>
+        <item name="colorAccent">@color/colorAccentHictio</item>
     </style>
 
 </resources>

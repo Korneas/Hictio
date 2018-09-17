@@ -1,4 +1,4 @@
-package com.example.camilomontoya.piscium.Fishes;
+package com.example.camilomontoya.hictio.Fishes;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,19 +13,15 @@ import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.camilomontoya.piscium.R;
+import com.example.camilomontoya.hictio.R;
 
 public class SapoaraActivity extends AppCompatActivity {
 
     public static final String TAG = "SapoaraActivity";
     private boolean out;
 
-    private Chronometer chrono;
-
     private SensorManager sensorManager;
-    private Sensor acc;
-
-    private MediaPlayer mp;
+    private MediaPlayer mp, success;
 
     private float acelVal, acelLast, shake;
     private int count;
@@ -43,6 +39,7 @@ public class SapoaraActivity extends AppCompatActivity {
         sensorManager.registerListener(sensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 
         mp = MediaPlayer.create(this, R.raw.splash01);
+        success = MediaPlayer.create(this, R.raw.success);
 
         acelVal = SensorManager.GRAVITY_EARTH;
         acelLast = SensorManager.GRAVITY_EARTH;
@@ -74,6 +71,7 @@ public class SapoaraActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         Toast.makeText(getApplicationContext(), "Done", Toast.LENGTH_SHORT).show();
+                                        success.start();
                                     }
                                 });
                             } else {
@@ -109,7 +107,7 @@ public class SapoaraActivity extends AppCompatActivity {
             float delta = acelVal - acelLast;
             shake = shake * 0.9f + delta;
 
-            if (shake > 3 && mp.isPlaying() && active) {
+            if (shake > 2 && mp.isPlaying() && active) {
                 // Accion a hacer al agitar
                 Toast.makeText(getApplicationContext(), "Prrro me agitaste", Toast.LENGTH_SHORT).show();
                 active = false;

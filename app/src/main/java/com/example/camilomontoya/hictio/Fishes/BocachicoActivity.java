@@ -1,12 +1,12 @@
-package com.example.camilomontoya.piscium.Fishes;
+package com.example.camilomontoya.hictio.Fishes;
 
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 
-import com.example.camilomontoya.piscium.Misc.GestureControl;
-import com.example.camilomontoya.piscium.R;
+import com.example.camilomontoya.hictio.Misc.GestureControl;
+import com.example.camilomontoya.hictio.R;
 
 public class BocachicoActivity extends AppCompatActivity {
 
@@ -16,7 +16,6 @@ public class BocachicoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bocachico);
-
         gesture = new GestureDetectorCompat(this, new GestureControl(getApplicationContext(), "bocachico"));
     }
 

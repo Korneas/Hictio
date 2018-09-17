@@ -1,4 +1,4 @@
-package com.example.camilomontoya.piscium.Misc;
+package com.example.camilomontoya.hictio.Misc;
 
 import android.graphics.Typeface;
 

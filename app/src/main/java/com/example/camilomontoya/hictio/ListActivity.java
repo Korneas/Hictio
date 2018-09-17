@@ -1,4 +1,4 @@
-package com.example.camilomontoya.piscium;
+package com.example.camilomontoya.hictio;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,16 +10,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.camilomontoya.piscium.Fishes.BocachicoActivity;
-import com.example.camilomontoya.piscium.Fishes.DiscoActivity;
-import com.example.camilomontoya.piscium.Fishes.FantasmaActivity;
-import com.example.camilomontoya.piscium.Fishes.LeporinoActivity;
-import com.example.camilomontoya.piscium.Fishes.MojarraActivity;
-import com.example.camilomontoya.piscium.Fishes.MonedaActivity;
-import com.example.camilomontoya.piscium.Fishes.OscarActivity;
-import com.example.camilomontoya.piscium.Fishes.PiranhaActivity;
-import com.example.camilomontoya.piscium.Fishes.RollizoActivity;
-import com.example.camilomontoya.piscium.Fishes.SapoaraActivity;
+import com.example.camilomontoya.hictio.Fishes.BocachicoActivity;
+import com.example.camilomontoya.hictio.Fishes.DiscoActivity;
+import com.example.camilomontoya.hictio.Fishes.FantasmaActivity;
+import com.example.camilomontoya.hictio.Fishes.LeporinoActivity;
+import com.example.camilomontoya.hictio.Fishes.MojarraActivity;
+import com.example.camilomontoya.hictio.Fishes.MonedaActivity;
+import com.example.camilomontoya.hictio.Fishes.OscarActivity;
+import com.example.camilomontoya.hictio.Fishes.PiranhaActivity;
+import com.example.camilomontoya.hictio.Fishes.RollizoActivity;
+import com.example.camilomontoya.hictio.Fishes.SapoaraActivity;
 
 import java.util.ArrayList;
 
@@ -57,7 +57,7 @@ public class ListActivity extends AppCompatActivity {
         activityNames.add("Mojarra Luminosa");
         activityNames.add("Pez Moneda");
         activityNames.add("Oscar");
-        activityNames.add("Piranha");
+        activityNames.add("Piraña");
         activityNames.add("Rollizo");
         activityNames.add("Sapoara");
 

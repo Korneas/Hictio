@@ -1,4 +1,4 @@
-package com.example.camilomontoya.piscium;
+package com.example.camilomontoya.hictio;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,4 +1,4 @@
-package com.example.camilomontoya.piscium;
+package com.example.camilomontoya.hictio;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.camilomontoya.piscium.Fishes.OscarActivity;
-import com.example.camilomontoya.piscium.Misc.Typo;
+import com.example.camilomontoya.hictio.Fishes.OscarActivity;
+import com.example.camilomontoya.hictio.Misc.Typo;
 
 public class HomeActivity extends AppCompatActivity {
 

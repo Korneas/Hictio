@@ -6,16 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".Fishes.RollizoActivity">
 
-    <TextView
-        android:id="@+id/textRollizo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Rollizo"
-        android:textColor="@color/colorAccentPiscium"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/rollizo_layout">
+
+
+        <TextView
+            android:id="@+id/textRollizo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/colorAccentPiscium"
+            android:textSize="20dp"
+            android:text="Rollizo" />
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

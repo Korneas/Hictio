@@ -6,16 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".Fishes.PiranhaActivity">
 
-    <TextView
-        android:id="@+id/textPiranha"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Piraña"
-        android:textColor="@color/colorAccentPiscium"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/piranha_layout">
+        <TextView
+            android:id="@+id/textPiranha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/colorAccentPiscium"
+            android:textSize="20dp"
+            android:text="Piraña" />
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

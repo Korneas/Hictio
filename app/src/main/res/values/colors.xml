@@ -3,7 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="colorPrimaryPiscium">#e6e6e6</color>
-    <color name="colorPrimaryDarkPiscium">#c8c8c8</color>
-    <color name="colorAccentPiscium">#3232ff</color>
+    <color name="colorPrimaryHictio">#724127</color>
+    <color name="colorPrimaryDarkHictio">#542a15</color>
+    <color name="colorAccentHictio">#d35f42</color>
+    <color name="colorBgHictio">#ffe9ae</color>
 </resources>
