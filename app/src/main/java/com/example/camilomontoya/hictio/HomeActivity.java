@@ -4,43 +4,40 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.camilomontoya.hictio.Fishes.OscarActivity;
 import com.example.camilomontoya.hictio.Misc.Typo;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private TextView title, subtitle;
-    private Button start;
+    private TextView subtitle, versionApp;
+    private ConstraintLayout home;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        Typo.getInstance().setTitle(Typeface.createFromAsset(getAssets(), "fonts/Muli-Black.ttf"));
-        Typo.getInstance().setSpecial(Typeface.createFromAsset(getAssets(), "fonts/Muli-SemiBold.ttf"));
-        Typo.getInstance().setContent(Typeface.createFromAsset(getAssets(), "fonts/Muli-Regular.ttf"));
+        Typo.getInstance().setTitle(Typeface.createFromAsset(getAssets(), "fonts/BarlowCondensed-Bold.ttf"));
+        Typo.getInstance().setSpecial(Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf"));
+        Typo.getInstance().setContent(Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf"));
 
-        title = (TextView) findViewById(R.id.textTitle);
         subtitle = (TextView) findViewById(R.id.textSubtitle);
+        versionApp = (TextView) findViewById(R.id.versionApp);
+        home = (ConstraintLayout) findViewById(R.id.homeLayout);
 
-        title.setTypeface(Typo.getInstance().getTitle());
-        subtitle.setTypeface(Typo.getInstance().getSpecial());
+        subtitle.setTypeface(Typo.getInstance().getContent());
+        versionApp.setTypeface(Typo.getInstance().getContent());
 
-        start = (Button) findViewById(R.id.btn_start);
-        start.setTypeface(Typo.getInstance().getContent());
-
-        start.setOnClickListener(new View.OnClickListener() {
+        home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this,ListActivity.class));
-                finish();
+                startActivity(new Intent(HomeActivity.this, MenuActivity.class));
             }
         });
+
     }
 }

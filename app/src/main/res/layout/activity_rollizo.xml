@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textColor="@color/colorAccentPiscium"
+            android:textColor="@color/colorAccentHictio"
             android:textSize="20dp"
             android:text="Rollizo" />
     </RelativeLayout>

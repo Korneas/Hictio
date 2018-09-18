@@ -8,4 +8,4 @@
     android:paddingStart="20dp"
     android:text="Im gay"
     android:textSize="14dp"
-    android:textColor="@color/colorAccentPiscium"/>
+    android:textColor="@color/colorAccentHictio"/>
