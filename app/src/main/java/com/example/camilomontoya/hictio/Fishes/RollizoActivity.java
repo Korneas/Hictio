@@ -1,71 +1,103 @@
 package com.example.camilomontoya.hictio.Fishes;
 
 import android.media.MediaPlayer;
+import android.media.PlaybackParams;
+import android.os.Build;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.camilomontoya.hictio.Misc.Typo;
 import com.example.camilomontoya.hictio.R;
 
-public class RollizoActivity extends AppCompatActivity implements View.OnTouchListener {
+public class RollizoActivity extends AppCompatActivity {
 
-    private RelativeLayout rL;
+    private ConstraintLayout cL;
+    private TextView title;
 
-    private boolean found, active;
-    private MediaPlayer success;
+    private int globalTouchPosY, globalCurrentPosY;
+    private int times;
+    private boolean found;
 
-    private Handler handler;
-    private Runnable r;
+    private MediaPlayer success, cut;
+    private PlaybackParams params;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rollizo);
 
-        rL = (RelativeLayout) findViewById(R.id.rollizo_layout);
-        rL.setOnTouchListener(this);
-        success = MediaPlayer.create(getApplicationContext(), R.raw.success);
+        cL = (ConstraintLayout) findViewById(R.id.rollizoLayout);
+        title = (TextView) findViewById(R.id.textRollizo);
 
-        handler = new Handler();
-        r = new Runnable() {
+        title.setTypeface(Typo.getInstance().getTitle());
+        success = MediaPlayer.create(this, R.raw.fine);
+        cut = MediaPlayer.create(this, R.raw.plant01);
+
+        cL.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void run() {
-                active = true;
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "Activo", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            public boolean onTouch(View v, MotionEvent event) {
+                handleTouch(event);
+                return true;
             }
-        };
-
-        handler.postDelayed(r, 8000);
+        });
     }
 
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
+    private void handleTouch(MotionEvent e) {
+        int action = e.getActionMasked();
+        int actionIndex = e.getActionIndex();
 
-        int x = (int) event.getX();
-        int y = (int) event.getY();
-
-        switch (event.getAction()) {
-            case (MotionEvent.ACTION_DOWN):
-                if (active && !found) {
-                    Toast.makeText(getApplicationContext(), "Posicion: " + x + " : " + y, Toast.LENGTH_SHORT).show();
-                    found = true;
-                    success.start();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                globalTouchPosY = (int) e.getY(0);
+                Log.d("Rollizo", "Inicio corte");
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                globalTouchPosY = (int) e.getY(0);
+                Log.d("Rollizo", "Inicio corte");
+                break;
+            case MotionEvent.ACTION_MOVE:
+                globalCurrentPosY = (int) e.getY(0);
+                break;
+            case MotionEvent.ACTION_UP:
+                int finalDiff = globalTouchPosY - globalCurrentPosY;
+                if (finalDiff > 0 && !found) {
+                    times++;
+                    cut.start();
                 }
+
+                if (times > 15 && !found) {
+                    success.start();
+                    found = true;
+                }
+
+                Log.d("Rollizo", "Termino corte");
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                int finalDiffPointer = globalTouchPosY - globalCurrentPosY;
+                if (finalDiffPointer > 0 && !found) {
+                    times++;
+                    cut.start();
+                }
+
+                if (times > 15 && !found) {
+                    success.start();
+                    found = true;
+                }
+
+                Log.d("Rollizo", "Termino corte");
                 break;
             default:
                 break;
         }
 
-        return super.onTouchEvent(event);
     }
 }

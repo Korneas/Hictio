@@ -3,6 +3,9 @@
     package="com.example.camilomontoya.hictio">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <application
         android:allowBackup="true"
@@ -24,7 +27,7 @@
         <activity android:name=".Fishes.MonedaActivity" />
         <activity android:name=".Fishes.BocachicoActivity" />
         <activity android:name=".Fishes.OscarActivity" />
-        <activity android:name=".ListActivity" />
+        <activity android:name=".PoolActivity" />
         <activity android:name=".Fishes.DiscoActivity" />
         <activity android:name=".Fishes.LeporinoActivity" />
         <activity android:name=".Fishes.PiranhaActivity" />

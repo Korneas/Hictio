@@ -33,7 +33,6 @@ public class FantasmaActivity extends AppCompatActivity {
         vib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         media = MediaPlayer.create(getApplicationContext(), R.raw.echo);
         success = MediaPlayer.create(getApplicationContext(), R.raw.success);
-        params = new PlaybackParams();
         rL = (RelativeLayout) findViewById(R.id.fantasma_layout);
 
         tries = (int) (Math.random() * 8);

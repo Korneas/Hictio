@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.camilomontoya.hictio.AboutActivity;
-import com.example.camilomontoya.hictio.ListActivity;
+import com.example.camilomontoya.hictio.PoolActivity;
 import com.example.camilomontoya.hictio.NavActivity;
 import com.example.camilomontoya.hictio.OptionsActivity;
 import com.example.camilomontoya.hictio.R;
@@ -30,7 +30,7 @@ public class MenuFragment extends Fragment{
     public MenuFragment() {
         activityList = new ArrayList<>();
         activityList.add(NavActivity.class);
-        activityList.add(ListActivity.class);
+        activityList.add(PoolActivity.class);
         activityList.add(OptionsActivity.class);
         activityList.add(AboutActivity.class);
     }

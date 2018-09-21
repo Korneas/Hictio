@@ -1,78 +1,32 @@
 package com.example.camilomontoya.hictio.Fishes;
 
 import android.media.MediaPlayer;
-import android.os.Handler;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import com.example.camilomontoya.hictio.Misc.Typo;
 import com.example.camilomontoya.hictio.R;
 
-public class DiscoActivity extends AppCompatActivity implements View.OnTouchListener {
+public class DiscoActivity extends AppCompatActivity {
 
-    private RelativeLayout rL;
-
-    private boolean found, active;
+    private ConstraintLayout cL;
+    private TextView title;
     private MediaPlayer success;
-
-    private Handler handler;
-    private Runnable r;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_disco);
 
-        rL = (RelativeLayout) findViewById(R.id.disco_layout);
-        rL.setOnTouchListener(this);
-        success = MediaPlayer.create(getApplicationContext(), R.raw.success);
+        cL = (ConstraintLayout) findViewById(R.id.disco_layout);
+        title = (TextView) findViewById(R.id.textDisco);
+        success = MediaPlayer.create(getApplicationContext(), R.raw.fine);
 
-        handler = new Handler();
-        r = new Runnable() {
-            @Override
-            public void run() {
-                active = true;
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "Activo", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        };
-
-        handler.postDelayed(r, 8000);
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-
-        int x = (int) event.getX();
-        int y = (int) event.getY();
-
-        switch (event.getAction()) {
-            case (MotionEvent.ACTION_DOWN):
-                if (active && !found) {
-                    Toast.makeText(getApplicationContext(), "Posicion: " + x + " : " + y, Toast.LENGTH_SHORT).show();
-                    found = true;
-                    success.start();
-                }
-                break;
-            default:
-                break;
-        }
-
-        return super.onTouchEvent(event);
-    }
-
-    /**
-     * Metodo para salir de la app si se esta en la actividad y devolverlo a la lista
-     */
-    @Override
-    public void onBackPressed() {
-        finish();
+        title.setTypeface(Typo.getInstance().getTitle());
     }
 }

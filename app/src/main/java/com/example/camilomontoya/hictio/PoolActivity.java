@@ -1,6 +1,5 @@
 package com.example.camilomontoya.hictio;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,10 +19,13 @@ import com.example.camilomontoya.hictio.Fishes.OscarActivity;
 import com.example.camilomontoya.hictio.Fishes.PiranhaActivity;
 import com.example.camilomontoya.hictio.Fishes.RollizoActivity;
 import com.example.camilomontoya.hictio.Fishes.SapoaraActivity;
+import com.example.camilomontoya.hictio.Network.Client;
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
-public class ListActivity extends AppCompatActivity {
+public class PoolActivity extends AppCompatActivity implements Observer {
 
     private ListView fishList;
     private ArrayList activityList, activityNames;
@@ -36,6 +38,10 @@ public class ListActivity extends AppCompatActivity {
         fishList = (ListView) findViewById(R.id.fishList);
         activityList = new ArrayList<>();
         activityNames = new ArrayList<>();
+
+        //Iniciar Conexion
+        Client.getInstance().setObserver(this);
+        Client.getInstance().startConection();
 
         //Agregar las clases para los intent al tocar un elemento de la lista
         activityList.add(BocachicoActivity.class);
@@ -69,9 +75,24 @@ public class ListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(getApplicationContext(), "Elegiste al item: " + activityNames.get(position).toString(), Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(ListActivity.this, (Class) activityList.get(position)));
+                startActivity(new Intent(PoolActivity.this, (Class) activityList.get(position)));
             }
         });
 
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if (arg instanceof String) {
+            String str = (String) arg;
+            if (str.contains("acuario")) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "Conectado al servidor", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
     }
 }

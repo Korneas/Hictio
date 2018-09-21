@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bocachicoLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fishes.BocachicoActivity">
@@ -16,7 +17,8 @@
         android:layout_marginTop="8dp"
         android:text="Bocachico"
         android:textColor="@color/colorAccentHictio"
-        android:textSize="20dp"
+        android:textSize="35dp"
+        android:textAllCaps="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -4,10 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:backgroundTint="@color/colorBgHictio"
-    android:background="@color/colorBgHictio"
     android:id="@+id/homeLayout"
     tools:context=".HomeActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_start" />
 
     <TextView
         android:id="@+id/textSubtitle"
@@ -19,7 +23,7 @@
         android:layout_marginTop="8dp"
         android:text="Toca para comenzar"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimaryHictio"
+        android:textColor="@color/colorBgHictio"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +43,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/hictio_logo" />
+        app:srcCompat="@drawable/hictio_logow" />
 
     <TextView
         android:id="@+id/versionApp"
