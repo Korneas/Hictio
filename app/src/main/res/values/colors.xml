@@ -7,4 +7,5 @@
     <color name="colorPrimaryDarkHictio">#542a15</color>
     <color name="colorAccentHictio">#d35f42</color>
     <color name="colorBgHictio">#ffe9ae</color>
+    <color name="colorTransHictio">#00ffffff</color>
 </resources>

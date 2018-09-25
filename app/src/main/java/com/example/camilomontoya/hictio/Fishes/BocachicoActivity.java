@@ -55,7 +55,7 @@ public class BocachicoActivity extends AppCompatActivity {
 
     private void handleTouch(MotionEvent e) {
         int pointerCount = e.getPointerCount();
-        if (pointerCount == 2) {
+        if (pointerCount == 3) {
             int action = e.getActionMasked();
 
             switch (action) {

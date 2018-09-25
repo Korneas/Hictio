@@ -27,6 +27,7 @@ public class OscarActivity extends AppCompatActivity implements Observer {
     private int times = 0;
 
     private MediaPlayer success, head, middle, tail, special;
+    private boolean ready, touchHead, touchMiddle, touchTail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +40,9 @@ public class OscarActivity extends AppCompatActivity implements Observer {
         name = (TextView) findViewById(R.id.textOscar);
         content = (TextView) findViewById(R.id.contentOscar);
         success = MediaPlayer.create(getApplicationContext(), R.raw.fine);
-        head = MediaPlayer.create(getApplicationContext(), R.raw.voz_cabeza);
-        middle = MediaPlayer.create(getApplicationContext(), R.raw.voz_cuerpo);
-        tail = MediaPlayer.create(getApplicationContext(), R.raw.voz_cola);
-        special = MediaPlayer.create(getApplicationContext(), R.raw.voz_rika);
+        head = MediaPlayer.create(getApplicationContext(), R.raw.oscar_01);
+        middle = MediaPlayer.create(getApplicationContext(), R.raw.oscar_02);
+        tail = MediaPlayer.create(getApplicationContext(), R.raw.oscar_03);
 
         name.setTypeface(Typo.getInstance().getTitle());
         content.setTypeface(Typo.getInstance().getContent());
@@ -50,10 +50,10 @@ public class OscarActivity extends AppCompatActivity implements Observer {
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!special.isPlaying()) {
-                    special.start();
-                }
-                Client.getInstance().send("oscar");
+                touchHead = false;
+                touchMiddle = false;
+                touchTail = false;
+                Log.i("Intento", "OMG");
             }
         });
 
@@ -76,34 +76,32 @@ public class OscarActivity extends AppCompatActivity implements Observer {
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
                     globalTouchPositionX = (int) m.getX(1);
-                    actionStr = "Abajo" + " ahora " + globalTouchCurrentPositionX + " antes " + globalTouchPositionX;
-                    //content.setText(actionStr);
                     break;
                 case MotionEvent.ACTION_MOVE:
                     globalTouchCurrentPositionX = (int) m.getX(1);
                     int diff = globalTouchPositionX - globalTouchCurrentPositionX;
-                    //actionStr = "Diferencia" + diff + " ahora " + globalTouchCurrentPositionX + " antes " + globalTouchPositionX;
-                    //content.setText(actionStr);
                     break;
                 case MotionEvent.ACTION_UP:
                     globalTouchCurrentPositionX = 0;
-                    actionStr = "Arriba" + " ahora " + globalTouchCurrentPositionX + " antes " + globalTouchPositionX;
-                    content.setText(actionStr);
-                    Toast.makeText(getApplicationContext(), "Made it!", Toast.LENGTH_SHORT).show();
                     break;
                 case MotionEvent.ACTION_POINTER_DOWN:
                     globalTouchPositionX = (int) m.getX(1);
-                    actionStr = "Abajo" + " ahora " + globalTouchCurrentPositionX + " antes " + globalTouchPositionX;
-                    content.setText(actionStr);
                     break;
                 case MotionEvent.ACTION_POINTER_UP:
                     int finalDiff = globalTouchPositionX - globalTouchCurrentPositionX;
-                    if (finalDiff < 0) {
+                    if (finalDiff < 0 && !found) {
                         times++;
-                        actionStr = "Lo acarisiaste " + times + " veces";
+                        actionStr = "Acaricialo " + (5 - times) + " veces más";
                         content.setText(actionStr);
                         if (!success.isPlaying()) {
                             success.start();
+                        }
+
+                        if (times >= 5) {
+                            found = true;
+                            actionStr = "El pez ya siente amistad contigo\n¡Lo lograste!";
+                            content.setText(actionStr);
+                            Client.getInstance().send("fish_0");
                         }
                     }
                     break;
@@ -121,25 +119,40 @@ public class OscarActivity extends AppCompatActivity implements Observer {
     public void update(Observable o, Object arg) {
         if (arg instanceof String) {
             String str = (String) arg;
-            if (str.contains("head")) {
-                Log.d("ClienteMensaje", str);
-                head.start();
-            } else if (str.contains("middle")) {
-                Log.d("ClienteMensaje", str);
-                middle.start();
-            } else if (str.contains("tail")) {
-                Log.d("ClienteMensaje", str);
-                tail.start();
-            } else if (str.contains("offline")){
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "Desconectado del servidor", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } else {
-                Log.d("ClienteMensaje", str);
+            if (ready) {
+                if (str.contains("head") && !touchHead && !head.isPlaying() && !middle.isPlaying() && !tail.isPlaying()) {
+                    Log.d("ClienteMensaje", str);
+                    Log.i("ClienteMensaje", str);
+                    head.start();
+                    touchHead = true;
+                } else if (str.contains("middle") && !touchMiddle && !middle.isPlaying() && !head.isPlaying() && !tail.isPlaying()) {
+                    Log.d("ClienteMensaje", str);
+                    Log.i("ClienteMensaje", str);
+                    middle.start();
+                    touchMiddle = true;
+                } else if (str.contains("tail") && !touchTail && !tail.isPlaying() && !head.isPlaying() && !middle.isPlaying()) {
+                    Log.d("ClienteMensaje", str);
+                    Log.i("ClienteMensaje", str);
+                    tail.start();
+                    touchTail = true;
+                }
             }
+
+            switch (str) {
+                case "onfish_0":
+                    ready = true;
+                    break;
+                case "offline":
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Desconectado del servidor", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    break;
+            }
+            Log.d("ClienteMensajePuro", str);
+            Log.i("ClienteMensajePuro", str);
         }
     }
 }

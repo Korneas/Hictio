@@ -13,6 +13,6 @@
         android:textSize="32dp"
         android:textAllCaps="true"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimaryHictio"/>
+        android:textColor="@color/colorBgHictio"/>
 
 </LinearLayout>
