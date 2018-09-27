@@ -24,6 +24,7 @@ import com.example.camilomontoya.hictio.Fishes.OscarActivity;
 import com.example.camilomontoya.hictio.Fishes.PiranhaActivity;
 import com.example.camilomontoya.hictio.Fishes.RollizoActivity;
 import com.example.camilomontoya.hictio.Fishes.SapoaraActivity;
+import com.example.camilomontoya.hictio.Misc.FishFragment;
 import com.example.camilomontoya.hictio.Network.Client;
 
 import java.util.ArrayList;
@@ -52,44 +53,33 @@ public class PoolActivity extends AppCompatActivity implements Observer {
         Client.getInstance().setObserver(this);
         Client.getInstance().startConection();
 
-        
+        poolPager = (ViewPager) findViewById(R.id.poolPager);
+        final List<Fragment> fishFrags = new ArrayList<>();
+        fishFrags.add(FishFragment.newInstance("Oscar", 0, 0));
+        fishFrags.add(FishFragment.newInstance("Piraña", 1, 0));
+        fishFrags.add(FishFragment.newInstance("Fantasma\nNegro", 2, 0));
+        fishFrags.add(FishFragment.newInstance("Pez Moneda", 3, 0));
 
-        //Agregar las clases para los intent al tocar un elemento de la lista
-        activityList.add(BocachicoActivity.class);
-        activityList.add(DiscoActivity.class);
-        activityList.add(FantasmaActivity.class);
-        activityList.add(LeporinoActivity.class);
-        activityList.add(MojarraActivity.class);
-        activityList.add(MonedaActivity.class);
-        activityList.add(OscarActivity.class);
-        activityList.add(PiranhaActivity.class);
-        activityList.add(RollizoActivity.class);
-        activityList.add(SapoaraActivity.class);
+        adapter = new SliderPagerAdapter(getSupportFragmentManager(), fishFrags);
+        poolPager.setAdapter(adapter);
+        poolPager.setCurrentItem(fishFrags.size());
 
-        //Agregar los nombres al seleccionarlos
-        activityNames.add("Bocachico");
-        activityNames.add("Pez Disco");
-        activityNames.add("Fantasma Negro");
-        activityNames.add("Leporino Listado");
-        activityNames.add("Mojarra Luminosa");
-        activityNames.add("Pez Moneda");
-        activityNames.add("Oscar");
-        activityNames.add("Piraña");
-        activityNames.add("Rollizo");
-        activityNames.add("Sapoara");
-
-
-        ArrayAdapter adapt = new ArrayAdapter(this, R.layout.list_item, activityNames);
-        fishList.setAdapter(adapt);
-
-        fishList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        poolPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), "Elegiste al item: " + activityNames.get(position).toString(), Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(PoolActivity.this, (Class) activityList.get(position)));
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
-
     }
 
     @Override
