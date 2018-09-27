@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.camilomontoya.hictio.Misc.HictioPlayer;
 import com.example.camilomontoya.hictio.Misc.MenuFragment;
 import com.example.camilomontoya.hictio.Misc.SlideAdapter;
 
@@ -29,8 +30,11 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        List<Fragment> fragments = new ArrayList<>();
+        HictioPlayer.getRef().setMenuContext(this);
+        HictioPlayer.getRef().playResumeMenu(0);
+
+        viewPager = (ViewPager) findViewById(R.id.menuPager);
+        final List<Fragment> fragments = new ArrayList<>();
         fragments.add(MenuFragment.newInstance("Navegar", 0));
         fragments.add(MenuFragment.newInstance("Estanque", 1));
         fragments.add(MenuFragment.newInstance("Opciones", 2));
@@ -39,6 +43,49 @@ public class MenuActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(fragments.size());
 
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                int index = position%fragments.size();
+                switch (index){
+                    case 0:
+                        Log.d("Menu", "Navigation");
+                        HictioPlayer.getRef().playMenu(0);
+                        break;
+                    case 1:
+                        Log.d("Menu", "Album");
+                        HictioPlayer.getRef().playMenu(1);
+                        break;
+                    case 2:
+                        Log.d("Menu", "Collection");
+                        HictioPlayer.getRef().playMenu(2);
+                        break;
+                    case 3:
+                        Log.d("Menu", "About");
+                        HictioPlayer.getRef().playMenu(3);
+                        break;
+                    default:
+                        Log.d("Menu", "Default");
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        HictioPlayer.getRef().playResumeMenu(viewPager.getCurrentItem()%4);
     }
 
     static class SliderPagerAdapter extends FragmentStatePagerAdapter {

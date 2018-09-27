@@ -6,12 +6,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.camilomontoya.hictio.Misc.CloseGesture;
+import com.example.camilomontoya.hictio.Misc.HictioPlayer;
 import com.example.camilomontoya.hictio.Misc.Typo;
 import com.example.camilomontoya.hictio.Network.Client;
+import com.example.camilomontoya.hictio.PoolActivity;
 import com.example.camilomontoya.hictio.R;
 
 import java.util.Observable;
@@ -25,9 +29,10 @@ public class OscarActivity extends AppCompatActivity implements Observer {
 
     private int globalTouchPositionX, globalTouchCurrentPositionX;
     private int times = 0;
-
-    private MediaPlayer success, head, middle, tail, special;
     private boolean ready, touchHead, touchMiddle, touchTail;
+
+    private ScaleGestureDetector gestureDetector;
+    private CloseGesture closeGesture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +41,13 @@ public class OscarActivity extends AppCompatActivity implements Observer {
 
         Client.getInstance().setObserver(this);
 
+        closeGesture = new CloseGesture(this);
+        gestureDetector = new ScaleGestureDetector(this, closeGesture);
+        closeGesture.setGestureDetector(gestureDetector);
+
         cL = (ConstraintLayout) findViewById(R.id.oscar_layout);
         name = (TextView) findViewById(R.id.textOscar);
         content = (TextView) findViewById(R.id.contentOscar);
-        success = MediaPlayer.create(getApplicationContext(), R.raw.fine);
-        head = MediaPlayer.create(getApplicationContext(), R.raw.oscar_01);
-        middle = MediaPlayer.create(getApplicationContext(), R.raw.oscar_02);
-        tail = MediaPlayer.create(getApplicationContext(), R.raw.oscar_03);
 
         name.setTypeface(Typo.getInstance().getTitle());
         content.setTypeface(Typo.getInstance().getContent());
@@ -53,7 +58,6 @@ public class OscarActivity extends AppCompatActivity implements Observer {
                 touchHead = false;
                 touchMiddle = false;
                 touchTail = false;
-                Log.i("Intento", "OMG");
             }
         });
 
@@ -93,9 +97,7 @@ public class OscarActivity extends AppCompatActivity implements Observer {
                         times++;
                         actionStr = "Acaricialo " + (5 - times) + " veces más";
                         content.setText(actionStr);
-                        if (!success.isPlaying()) {
-                            success.start();
-                        }
+                        HictioPlayer.getRef().playSuccess(this);
 
                         if (times >= 5) {
                             found = true;
@@ -112,6 +114,10 @@ public class OscarActivity extends AppCompatActivity implements Observer {
         } else {
             globalTouchPositionX = 0;
             globalTouchCurrentPositionX = 0;
+
+            if(found) {
+                gestureDetector.onTouchEvent(m);
+            }
         }
     }
 
@@ -120,20 +126,20 @@ public class OscarActivity extends AppCompatActivity implements Observer {
         if (arg instanceof String) {
             String str = (String) arg;
             if (ready) {
-                if (str.contains("head") && !touchHead && !head.isPlaying() && !middle.isPlaying() && !tail.isPlaying()) {
+                if (str.contains("head") && !touchHead && HictioPlayer.getRef().isPlay()) {
                     Log.d("ClienteMensaje", str);
                     Log.i("ClienteMensaje", str);
-                    head.start();
+                    HictioPlayer.getRef().playSample(this,"oscar",1);
                     touchHead = true;
-                } else if (str.contains("middle") && !touchMiddle && !middle.isPlaying() && !head.isPlaying() && !tail.isPlaying()) {
+                } else if (str.contains("middle") && touchHead && !touchMiddle && HictioPlayer.getRef().isPlay()) {
                     Log.d("ClienteMensaje", str);
                     Log.i("ClienteMensaje", str);
-                    middle.start();
+                    HictioPlayer.getRef().playSample(this,"oscar",2);
                     touchMiddle = true;
-                } else if (str.contains("tail") && !touchTail && !tail.isPlaying() && !head.isPlaying() && !middle.isPlaying()) {
+                } else if (str.contains("tail") && touchHead && touchMiddle && !touchTail && HictioPlayer.getRef().isPlay()) {
                     Log.d("ClienteMensaje", str);
                     Log.i("ClienteMensaje", str);
-                    tail.start();
+                    HictioPlayer.getRef().playSample(this,"oscar",3);
                     touchTail = true;
                 }
             }
@@ -154,5 +160,11 @@ public class OscarActivity extends AppCompatActivity implements Observer {
             Log.d("ClienteMensajePuro", str);
             Log.i("ClienteMensajePuro", str);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Client.getInstance().send("out_0");
     }
 }

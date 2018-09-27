@@ -107,7 +107,7 @@ public class MonedaActivity extends AppCompatActivity implements Observer{
                     if(totalAngle > 12000){
                         success.start();
                         ready = true;
-                        Client.getInstance().send("fish_1");
+                        Client.getInstance().send("fish_2");
                     }
 
                     //MAPEAR ANGULO CON EL VOLUMEN DEL MEDIAPLAYER
@@ -132,7 +132,6 @@ public class MonedaActivity extends AppCompatActivity implements Observer{
                 }
                 break;
             case MotionEvent.ACTION_POINTER_UP:
-
                 break;
             default:
                 break;
@@ -160,7 +159,7 @@ public class MonedaActivity extends AppCompatActivity implements Observer{
             }
 
             switch (str) {
-                case "onfish_1":
+                case "onfish_2":
                     ready = true;
                     break;
                 case "offline":

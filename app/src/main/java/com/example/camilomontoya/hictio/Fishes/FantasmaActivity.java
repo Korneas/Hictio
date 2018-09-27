@@ -11,9 +11,13 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.camilomontoya.hictio.Network.Client;
 import com.example.camilomontoya.hictio.R;
 
-public class FantasmaActivity extends AppCompatActivity {
+import java.util.Observable;
+import java.util.Observer;
+
+public class FantasmaActivity extends AppCompatActivity implements Observer{
 
     private Vibrator vib;
     private final long time = 350;
@@ -30,6 +34,8 @@ public class FantasmaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fantasma);
 
+        Client.getInstance().setObserver(this);
+
         vib = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         media = MediaPlayer.create(getApplicationContext(), R.raw.echo);
         success = MediaPlayer.create(getApplicationContext(), R.raw.success);
@@ -44,11 +50,9 @@ public class FantasmaActivity extends AppCompatActivity {
                     vib.vibrate(time);
                     int chance = (int) (Math.random() * 8);
                     if (chance == tries) {
-                        Toast.makeText(getApplicationContext(), "Prrro me encontraste", Toast.LENGTH_SHORT).show();
                         found = true;
                         success.start();
                     } else {
-                        Toast.makeText(getApplicationContext(), "Prrro esta no fue | " + chance + " : " + tries, Toast.LENGTH_SHORT).show();
                         media.start();
                     }
                 }
@@ -62,5 +66,10 @@ public class FantasmaActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+
     }
 }
