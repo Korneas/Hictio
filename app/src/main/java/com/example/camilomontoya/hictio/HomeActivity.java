@@ -62,11 +62,9 @@ public class HomeActivity extends AppCompatActivity {
         Typo.getInstance().setContent(Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf"));
 
         subtitle = (TextView) findViewById(R.id.textSubtitle);
-        versionApp = (TextView) findViewById(R.id.versionApp);
         home = (ConstraintLayout) findViewById(R.id.homeLayout);
 
         subtitle.setTypeface(Typo.getInstance().getContent());
-        versionApp.setTypeface(Typo.getInstance().getContent());
 
         home.setOnClickListener(new View.OnClickListener() {
             @Override

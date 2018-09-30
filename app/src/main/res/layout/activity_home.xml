@@ -46,15 +46,16 @@
         app:srcCompat="@drawable/hictio_logow" />
 
     <TextView
-        android:id="@+id/versionApp"
+        android:id="@+id/voiceOverText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:text="v0.1 (Beta test)"
-        android:textSize="8dp"
-        android:textColor="@color/colorPrimaryHictio"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:text="@string/talk_back"
+        android:textColor="#00000000"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

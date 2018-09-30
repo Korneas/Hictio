@@ -1,10 +1,5 @@
 package com.example.camilomontoya.hictio.Fishes;
 
-import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Vibrator;
 import android.support.constraint.ConstraintLayout;
@@ -14,12 +9,13 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.camilomontoya.hictio.Misc.CloseGesture;
+import com.example.camilomontoya.hictio.Misc.HictioPlayer;
 import com.example.camilomontoya.hictio.Misc.Typo;
+import com.example.camilomontoya.hictio.Misc.User;
 import com.example.camilomontoya.hictio.Network.Client;
 import com.example.camilomontoya.hictio.R;
 
@@ -28,10 +24,12 @@ import java.util.Observer;
 
 public class PiranhaActivity extends AppCompatActivity implements Observer {
 
+    private final static int FISH_ID = 1, HEAD = 0, MIDDLE = 1, TAIL = 2;
+
     private ConstraintLayout layout;
     private TextView title;
 
-    private MediaPlayer success, head, tail, middle;
+    private MediaPlayer success;
 
     private int globalCurrentX1, globalCurrentX2;
     private int count;
@@ -40,10 +38,15 @@ public class PiranhaActivity extends AppCompatActivity implements Observer {
     private ScaleGestureDetector gestureDetector;
     private CloseGesture closeGesture;
 
+    private int times;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_piranha);
+
+        HictioPlayer.getRef().setFishContext(this, 1);
+        HictioPlayer.getRef().setBeforeSpeech(this);
 
         Client.getInstance().setObserver(this);
 
@@ -57,9 +60,6 @@ public class PiranhaActivity extends AppCompatActivity implements Observer {
         title.setTypeface(Typo.getInstance().getTitle());
 
         success = MediaPlayer.create(getApplicationContext(), R.raw.fine);
-        head = MediaPlayer.create(getApplicationContext(), R.raw.piranha_01);
-        middle = MediaPlayer.create(getApplicationContext(), R.raw.piranha_02);
-        tail = MediaPlayer.create(getApplicationContext(), R.raw.piranha_03);
 
         layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -80,11 +80,12 @@ public class PiranhaActivity extends AppCompatActivity implements Observer {
                 case MotionEvent.ACTION_DOWN:
                     globalCurrentX1 = (int) e.getX(0);
 
-                    if(active && !found){
-                        ((Vibrator)getSystemService(VIBRATOR_SERVICE)).cancel();
+                    if (active && !found) {
+                        ((Vibrator) getSystemService(VIBRATOR_SERVICE)).cancel();
                         title.setText("Gotcha!");
                         success.start();
                         found = true;
+                        User.getRef().setFishGesture(FISH_ID, true);
                         Client.getInstance().send("fish_1");
                     }
 
@@ -101,7 +102,7 @@ public class PiranhaActivity extends AppCompatActivity implements Observer {
 
                         if (count > 30000) {
                             active = true;
-                            ((Vibrator)getSystemService(VIBRATOR_SERVICE)).vibrate(20000);
+                            ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(20000);
                         }
 
                         globalCurrentX1 = globalCurrentX2;
@@ -128,18 +129,20 @@ public class PiranhaActivity extends AppCompatActivity implements Observer {
         if (arg instanceof String) {
             String str = (String) arg;
             if (ready) {
-                if (str.contains("head") && !touchHead && !head.isPlaying() && !middle.isPlaying() && !tail.isPlaying()) {
-                    Log.d("ClienteMensaje", str);
-                    head.start();
-                    touchHead = true;
-                } else if (str.contains("middle") && !touchMiddle && !middle.isPlaying() && !head.isPlaying() && !tail.isPlaying()) {
-                    Log.d("ClienteMensaje", str);
-                    middle.start();
-                    touchMiddle = true;
-                } else if (str.contains("tail") && !touchTail && !tail.isPlaying() && !head.isPlaying() && !middle.isPlaying()) {
-                    Log.d("ClienteMensaje", str);
-                    tail.start();
-                    touchTail = true;
+                if (str.contains("head") || str.contains("middle") || str.contains("tail")) {
+                    if (!User.getRef().getFishAudioState(FISH_ID, HEAD)) {
+                        Log.d("ClienteMensaje", str);
+                        HictioPlayer.getRef().playSample(0);
+                        touchHead = true;
+                    } else if (touchHead && !touchMiddle && !HictioPlayer.getRef().getPlaying(0)) {
+                        Log.d("ClienteMensaje", str);
+                        HictioPlayer.getRef().playSample(1);
+                        touchMiddle = true;
+                    } else if (str.contains("tail") && touchHead && touchMiddle && !touchTail && !HictioPlayer.getRef().getPlaying(1)) {
+                        Log.d("ClienteMensaje", str);
+                        HictioPlayer.getRef().playSample(2);
+                        touchTail = true;
+                    }
                 }
             }
 

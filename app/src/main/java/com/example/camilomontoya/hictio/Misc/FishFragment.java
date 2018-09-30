@@ -3,11 +3,15 @@ package com.example.camilomontoya.hictio.Misc;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -30,12 +34,27 @@ public class FishFragment extends Fragment {
 
     private ArrayList activityList;
 
+    private Handler handler;
+    private Runnable oneTap;
+    private int k;
+
+    private ScaleGestureDetector gestureDetector;
+    private CloseGesture closeGesture;
+
     public FishFragment(){
         activityList = new ArrayList<>();
         activityList.add(OscarActivity.class);
         activityList.add(PiranhaActivity.class);
         activityList.add(FantasmaActivity.class);
         activityList.add(MonedaActivity.class);
+        handler = new Handler();
+        oneTap = new Runnable() {
+            @Override
+            public void run() {
+                k = 0;
+                HictioPlayer.getRef().playPool(type);
+            }
+        };
     }
 
     public static FishFragment newInstance(String title, int type, int draw){
@@ -55,6 +74,11 @@ public class FishFragment extends Fragment {
             title = getArguments().getString(PARAM1);
             type = getArguments().getInt(PARAM2);
             draw = getArguments().getInt(PARAM3);
+
+
+            closeGesture = new CloseGesture(getContext());
+            gestureDetector = new ScaleGestureDetector(getContext(), closeGesture);
+            closeGesture.setGestureDetector(gestureDetector);
         }
     }
 
@@ -62,17 +86,37 @@ public class FishFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fish_slide, container, false);
-        ConstraintLayout layout = (ConstraintLayout) v.findViewById(R.id.fishSlideLayout);
+        ConstraintLayout fishLayout = (ConstraintLayout) v.findViewById(R.id.fishSlideLayout);
         TextView txt = (TextView) v.findViewById(R.id.fishText);
         txt.setText(title);
         txt.setTypeface(Typo.getInstance().getTitle());
 
-        layout.setOnClickListener(new View.OnClickListener() {
+        fishLayout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(), (Class) activityList.get(type)));
+            public void onClick(View view) {
+                k++;
+                if (k == 1) {
+                    handler.postDelayed(oneTap, 350);
+                } else if(k >= 2){
+                    handler.removeCallbacks(oneTap);
+                    startActivity(new Intent(getContext(), (Class) activityList.get(type)));
+                    k = 0;
+                }
+                Log.d("FishFragment", "El valor es: " + k);
             }
         });
+
+        fishLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                handler.removeCallbacks(oneTap);
+                if(event.getPointerCount()>=2) {
+                    gestureDetector.onTouchEvent(event);
+                }
+                return false;
+            }
+        });
+
         return v;
     }
 

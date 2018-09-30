@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">Hictio</string>
     <string name="title_activity_menu">MenuActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_navigate">Navegar</string>
+    <string name="title_album">Álbum</string>
+    <string name="title_options">Opciones</string>
+    <string name="title_about">Acerca de\nHictio</string>
+    <string name="talk_back">Esta aplicación no necesita del Talk Back para funcionar, en estos momentos puedes apagarlo y tocar la pantalla para continuar</string>
 </resources>

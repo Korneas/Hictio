@@ -1,6 +1,7 @@
 package com.example.camilomontoya.hictio.Misc;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,24 +19,36 @@ import com.example.camilomontoya.hictio.R;
 
 import java.util.ArrayList;
 
-public class MenuFragment extends Fragment{
+public class MenuFragment extends Fragment {
 
     private static final String PARAM1 = "Titulo";
     private static final String PARAM2 = "Tipo";
     private String titulo;
     private int type;
+    private int k;
+    private Handler handler;
+    private Runnable oneTap;
 
     private ArrayList activityList;
 
     public MenuFragment() {
+
         activityList = new ArrayList<>();
         activityList.add(NavActivity.class);
         activityList.add(PoolActivity.class);
         activityList.add(OptionsActivity.class);
         activityList.add(AboutActivity.class);
+        handler = new Handler();
+        oneTap = new Runnable() {
+            @Override
+            public void run() {
+                k = 0;
+                HictioPlayer.getRef().playMenu(type);
+            }
+        };
     }
 
-    public static MenuFragment newInstance (String titulo, int type){
+    public static MenuFragment newInstance(String titulo, int type) {
         MenuFragment fragment = new MenuFragment();
         Bundle args = new Bundle();
         args.putString(PARAM1, titulo);
@@ -47,7 +60,7 @@ public class MenuFragment extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments() != null){
+        if (getArguments() != null) {
             titulo = getArguments().getString(PARAM1);
             type = getArguments().getInt(PARAM2);
         }
@@ -65,7 +78,14 @@ public class MenuFragment extends Fragment{
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getContext(), (Class) activityList.get(type)));
+                k++;
+                if (k == 1) {
+                    handler.postDelayed(oneTap, 350);
+                } else if(k >= 2){
+                    handler.removeCallbacks(oneTap);
+                    startActivity(new Intent(getContext(), (Class) activityList.get(type)));
+                    k = 0;
+                }
             }
         });
 

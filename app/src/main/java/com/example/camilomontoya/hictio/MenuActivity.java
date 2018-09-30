@@ -22,7 +22,6 @@ import java.util.List;
 public class MenuActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
-    private ViewGroup frameLayout;
     private SliderPagerAdapter adapter;
 
     @Override
@@ -35,10 +34,10 @@ public class MenuActivity extends AppCompatActivity {
 
         viewPager = (ViewPager) findViewById(R.id.menuPager);
         final List<Fragment> fragments = new ArrayList<>();
-        fragments.add(MenuFragment.newInstance("Navegar", 0));
-        fragments.add(MenuFragment.newInstance("Estanque", 1));
-        fragments.add(MenuFragment.newInstance("Opciones", 2));
-        fragments.add(MenuFragment.newInstance("Acerca de\nHictio", 3));
+        fragments.add(MenuFragment.newInstance(getResources().getString(R.string.title_navigate), 0));
+        fragments.add(MenuFragment.newInstance(getResources().getString(R.string.title_album), 1));
+        fragments.add(MenuFragment.newInstance(getResources().getString(R.string.title_options), 2));
+        fragments.add(MenuFragment.newInstance(getResources().getString(R.string.title_about), 3));
         adapter = new SliderPagerAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(fragments.size());
@@ -86,6 +85,7 @@ public class MenuActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         HictioPlayer.getRef().playResumeMenu(viewPager.getCurrentItem()%4);
+
     }
 
     static class SliderPagerAdapter extends FragmentStatePagerAdapter {
