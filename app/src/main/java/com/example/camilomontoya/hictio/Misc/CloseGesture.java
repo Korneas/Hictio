@@ -2,9 +2,12 @@ package com.example.camilomontoya.hictio.Misc;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.ScaleGestureDetector;
 import android.widget.Toast;
+
+import com.example.camilomontoya.hictio.R;
 
 public class CloseGesture extends ScaleGestureDetector.SimpleOnScaleGestureListener {
 
@@ -12,12 +15,20 @@ public class CloseGesture extends ScaleGestureDetector.SimpleOnScaleGestureListe
     private float scale1, scale2;
     private Context c;
     private ScaleGestureDetector gestureDetector;
+    private MediaPlayer out;
 
     public CloseGesture(Context c) {
         this.c = c;
         scaleFactor = 1.0f;
         scale1 = 1.0f;
         scale2 = 1.0f;
+        out = MediaPlayer.create(c, R.raw.out);
+        out.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                out.release();
+            }
+        });
     }
 
     @Override
@@ -41,6 +52,7 @@ public class CloseGesture extends ScaleGestureDetector.SimpleOnScaleGestureListe
         scale2 = scaleFactor;
         if(scale1 > scale2){
             ((Activity)c).finish();
+            out.start();
         }
         Log.d("Scale","Scale End");
     }

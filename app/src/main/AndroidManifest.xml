@@ -5,7 +5,8 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.GET_TASKS"/>
 
     <application
         android:allowBackup="true"
@@ -15,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/HictioTheme">
-        <activity android:name=".HomeActivity">
+        <activity android:name=".RegisterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,9 +37,11 @@
         <activity
             android:name=".MenuActivity"
             android:label="@string/title_activity_menu" />
-        <activity android:name=".NavActivity" />
+        <activity android:name=".ExploreActivity" />
         <activity android:name=".OptionsActivity" />
-        <activity android:name=".AboutActivity"></activity>
+        <activity android:name=".AboutActivity" />
+        <activity android:name=".HomeActivity"/>
+        <service android:name=".Misc.BackgroundMusic"/>
     </application>
 
 </manifest>

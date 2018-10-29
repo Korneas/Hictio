@@ -7,6 +7,19 @@
     android:background="@color/colorBgHictio"
     tools:context=".OptionsActivity">
 
+    <android.support.v4.view.ViewPager
+        android:id="@+id/optionsPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/title_options"
         android:layout_width="wrap_content"
@@ -17,7 +30,7 @@
         android:layout_marginTop="8dp"
         android:text="Opciones"
         android:textAllCaps="true"
-        android:textSize="20dp"
+        android:textSize="40dp"
         android:textColor="@color/colorAccentHictio"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,53 +38,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.2" />
 
-    <SeekBar
-        android:id="@+id/volumeOption"
-        android:layout_width="250dp"
+    <TextView
+        android:id="@+id/uidOptions"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:max="10"
-        android:progress="5"
+        android:text="TextView"
+        android:textColor="@color/colorAccentHictio"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_options"
-        app:layout_constraintVertical_bias="0.33" />
-
-    <SeekBar
-        android:id="@+id/musicOption"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:max="10"
-        android:progress="3"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_options"
-        app:layout_constraintVertical_bias="0.165" />
-
-    <SeekBar
-        android:id="@+id/velOption"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:max="10"
-        android:progress="1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_options"
-        app:layout_constraintVertical_bias="0.495" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.example.camilomontoya.hictio.Misc;
 
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -31,6 +32,7 @@ public class FishFragment extends Fragment {
     private static final String PARAM3 = "Ilustracion";
     private String title;
     private int type, draw;
+    private MediaPlayer[] poolPlayer;
 
     private ArrayList activityList;
 
@@ -41,23 +43,15 @@ public class FishFragment extends Fragment {
     private ScaleGestureDetector gestureDetector;
     private CloseGesture closeGesture;
 
-    public FishFragment(){
+    public FishFragment() {
         activityList = new ArrayList<>();
         activityList.add(OscarActivity.class);
         activityList.add(PiranhaActivity.class);
         activityList.add(FantasmaActivity.class);
         activityList.add(MonedaActivity.class);
-        handler = new Handler();
-        oneTap = new Runnable() {
-            @Override
-            public void run() {
-                k = 0;
-                HictioPlayer.getRef().playPool(type);
-            }
-        };
     }
 
-    public static FishFragment newInstance(String title, int type, int draw){
+    public static FishFragment newInstance(String title, int type, int draw) {
         FishFragment fragment = new FishFragment();
         Bundle args = new Bundle();
         args.putString(PARAM1, title);
@@ -70,11 +64,25 @@ public class FishFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments() != null){
+        if (getArguments() != null) {
             title = getArguments().getString(PARAM1);
             type = getArguments().getInt(PARAM2);
             draw = getArguments().getInt(PARAM3);
 
+            poolPlayer = new MediaPlayer[4];
+            poolPlayer[0] = MediaPlayer.create(getContext(), R.raw.oscar_name);
+            poolPlayer[1] = MediaPlayer.create(getContext(), R.raw.piranha_name);
+            poolPlayer[2] = MediaPlayer.create(getContext(), R.raw.blackghost_name);
+            poolPlayer[3] = MediaPlayer.create(getContext(), R.raw.moneda_name);
+
+            handler = new Handler();
+            oneTap = new Runnable() {
+                @Override
+                public void run() {
+                    k = 0;
+                    poolPlayer[type].start();
+                }
+            };
 
             closeGesture = new CloseGesture(getContext());
             gestureDetector = new ScaleGestureDetector(getContext(), closeGesture);
@@ -97,7 +105,7 @@ public class FishFragment extends Fragment {
                 k++;
                 if (k == 1) {
                     handler.postDelayed(oneTap, 350);
-                } else if(k >= 2){
+                } else if (k >= 2) {
                     handler.removeCallbacks(oneTap);
                     startActivity(new Intent(getContext(), (Class) activityList.get(type)));
                     k = 0;
@@ -110,7 +118,7 @@ public class FishFragment extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 handler.removeCallbacks(oneTap);
-                if(event.getPointerCount()>=2) {
+                if (event.getPointerCount() >= 2) {
                     gestureDetector.onTouchEvent(event);
                 }
                 return false;
@@ -120,7 +128,7 @@ public class FishFragment extends Fragment {
         return v;
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return title;
     }
 }

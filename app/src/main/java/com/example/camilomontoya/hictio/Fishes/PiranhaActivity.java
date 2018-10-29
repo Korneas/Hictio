@@ -1,6 +1,7 @@
 package com.example.camilomontoya.hictio.Fishes;
 
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -13,23 +14,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.camilomontoya.hictio.Misc.CloseGesture;
-import com.example.camilomontoya.hictio.Misc.HictioPlayer;
 import com.example.camilomontoya.hictio.Misc.Typo;
 import com.example.camilomontoya.hictio.Misc.User;
 import com.example.camilomontoya.hictio.Network.Client;
 import com.example.camilomontoya.hictio.R;
 
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
 public class PiranhaActivity extends AppCompatActivity implements Observer {
 
     private final static int FISH_ID = 1, HEAD = 0, MIDDLE = 1, TAIL = 2;
+    private boolean audioRunning;
 
     private ConstraintLayout layout;
     private TextView title;
 
-    private MediaPlayer success;
+    private MediaPlayer success, beforeSpeech;
+    private MediaPlayer[] piranhaPlayer, piranhaLearn;
 
     private int globalCurrentX1, globalCurrentX2;
     private int count;
@@ -44,11 +47,19 @@ public class PiranhaActivity extends AppCompatActivity implements Observer {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_piranha);
+        piranhaLearn = new MediaPlayer[2];
+        User.getRef().setActualContext(getApplicationContext());
 
-        HictioPlayer.getRef().setFishContext(this, 1);
-        HictioPlayer.getRef().setBeforeSpeech(this);
+        if (User.getRef().getFishGesture(FISH_ID)) {
+            piranhaPlayer = new MediaPlayer[3];
+            piranhaPlayer[0] = MediaPlayer.create(this, R.raw.piranha_01);
+            piranhaPlayer[1] = MediaPlayer.create(this, R.raw.piranha_02);
+            piranhaPlayer[2] = MediaPlayer.create(this, R.raw.piranha_03);
+        }
 
         Client.getInstance().setObserver(this);
+        success = MediaPlayer.create(getApplicationContext(), R.raw.fine);
+        beforeSpeech = MediaPlayer.create(getApplicationContext(), R.raw.speech);
 
         closeGesture = new CloseGesture(this);
         gestureDetector = new ScaleGestureDetector(this, closeGesture);
@@ -58,8 +69,6 @@ public class PiranhaActivity extends AppCompatActivity implements Observer {
         title = (TextView) findViewById(R.id.textPiranha);
 
         title.setTypeface(Typo.getInstance().getTitle());
-
-        success = MediaPlayer.create(getApplicationContext(), R.raw.fine);
 
         layout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -83,10 +92,35 @@ public class PiranhaActivity extends AppCompatActivity implements Observer {
                     if (active && !found) {
                         ((Vibrator) getSystemService(VIBRATOR_SERVICE)).cancel();
                         title.setText("Gotcha!");
+                        if (success != null) {
+                            success.release();
+                            success = MediaPlayer.create(getApplicationContext(), R.raw.fine);
+                        }
                         success.start();
                         found = true;
-                        User.getRef().setFishGesture(FISH_ID, true);
-                        Client.getInstance().send("fish_1");
+                        if (!User.getRef().getFishGesture(FISH_ID)) {
+                            if (piranhaLearn[0] == null)
+                                piranhaLearn[0] = MediaPlayer.create(getApplicationContext(), R.raw.piranha_fine);
+                            (new Handler()).postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    User.getRef().setFishGesture(FISH_ID, true);
+
+                                    piranhaLearn[0].start();
+                                }
+                            }, 1000);
+
+                            (new Handler()).postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    finish();
+                                }
+                            }, 1000 + piranhaLearn[0].getDuration());
+                        } else {
+                            if (piranhaLearn[1] == null)
+                                piranhaLearn[1] = MediaPlayer.create(getApplicationContext(), R.raw.piranha_call);
+                            piranhaLearn[1].start();
+                        }
                     }
 
                     break;
@@ -100,7 +134,7 @@ public class PiranhaActivity extends AppCompatActivity implements Observer {
                             count += (globalCurrentX1 - globalCurrentX2);
                         }
 
-                        if (count > 30000) {
+                        if (count > 15000) {
                             active = true;
                             ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(20000);
                         }
@@ -114,14 +148,13 @@ public class PiranhaActivity extends AppCompatActivity implements Observer {
             globalCurrentX1 = 0;
             globalCurrentX2 = 0;
 
-            gestureDetector.onTouchEvent(e);
+            //gestureDetector.onTouchEvent(e);
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Client.getInstance().send("out_2");
     }
 
     @Override
@@ -129,20 +162,87 @@ public class PiranhaActivity extends AppCompatActivity implements Observer {
         if (arg instanceof String) {
             String str = (String) arg;
             if (ready) {
-                if (str.contains("head") || str.contains("middle") || str.contains("tail")) {
-                    if (!User.getRef().getFishAudioState(FISH_ID, HEAD)) {
-                        Log.d("ClienteMensaje", str);
-                        HictioPlayer.getRef().playSample(0);
-                        touchHead = true;
-                    } else if (touchHead && !touchMiddle && !HictioPlayer.getRef().getPlaying(0)) {
-                        Log.d("ClienteMensaje", str);
-                        HictioPlayer.getRef().playSample(1);
-                        touchMiddle = true;
-                    } else if (str.contains("tail") && touchHead && touchMiddle && !touchTail && !HictioPlayer.getRef().getPlaying(1)) {
-                        Log.d("ClienteMensaje", str);
-                        HictioPlayer.getRef().playSample(2);
-                        touchTail = true;
+                if (str.contains("head") && !audioRunning) {
+                    Log.d("Piranha", "Audio 1");
+                    audioRunning = true;
+
+                    if (User.getRef().getFishGesture(FISH_ID)) {
+                        piranhaPlayer[0].release();
+                        piranhaPlayer[0] = MediaPlayer.create(this, R.raw.piranha_01);
                     }
+                    if (beforeSpeech != null) {
+                        beforeSpeech.release();
+                        beforeSpeech = MediaPlayer.create(getApplicationContext(), R.raw.speech);
+                    }
+                    beforeSpeech.start();
+                    beforeSpeech.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            piranhaPlayer[0].start();
+                        }
+                    });
+
+                    piranhaPlayer[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            audioRunning = false;
+                            User.getRef().setFishes(FISH_ID, HEAD, true);
+                        }
+                    });
+                } else if (str.contains("middle") && !audioRunning) {
+                    Log.d("Piranha", "Audio 2");
+                    audioRunning = true;
+
+                    if (User.getRef().getFishGesture(FISH_ID)) {
+                        piranhaPlayer[1].release();
+                        piranhaPlayer[1] = MediaPlayer.create(this, R.raw.piranha_02);
+                    }
+                    if (beforeSpeech != null) {
+                        beforeSpeech.release();
+                        beforeSpeech = MediaPlayer.create(getApplicationContext(), R.raw.speech);
+                    }
+                    beforeSpeech.start();
+                    beforeSpeech.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            piranhaPlayer[1].start();
+                        }
+                    });
+
+                    piranhaPlayer[1].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            audioRunning = false;
+                            User.getRef().setFishes(FISH_ID, MIDDLE, true);
+                        }
+                    });
+
+                } else if (str.contains("tail") && !audioRunning) {
+                    Log.d("Piranha", "Audio 3");
+
+                    if (User.getRef().getFishGesture(FISH_ID)) {
+                        piranhaPlayer[2].release();
+                        piranhaPlayer[2] = MediaPlayer.create(this, R.raw.piranha_03);
+                    }
+                    if (beforeSpeech != null) {
+                        beforeSpeech.release();
+                        beforeSpeech = MediaPlayer.create(getApplicationContext(), R.raw.speech);
+                    }
+                    beforeSpeech.start();
+                    beforeSpeech.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            piranhaPlayer[2].start();
+                        }
+                    });
+
+                    piranhaPlayer[2].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            audioRunning = false;
+                            User.getRef().setFishes(FISH_ID, TAIL, true);
+                        }
+                    });
                 }
             }
 
@@ -161,5 +261,12 @@ public class PiranhaActivity extends AppCompatActivity implements Observer {
             }
             Log.d("ClienteMensajePuro", str);
         }
+    }
+
+
+
+    @Override
+    public void onBackPressed() {
+        //Do nothing bro
     }
 }

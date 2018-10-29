@@ -3,6 +3,7 @@ package com.example.camilomontoya.hictio.Misc;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.PlaybackParams;
+import android.os.Build;
 import android.os.Vibrator;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -29,7 +30,9 @@ public class GestureControl extends GestureDetector.SimpleOnGestureListener {
 
         dig = MediaPlayer.create(c, R.raw.digging01);
         success = MediaPlayer.create(c, R.raw.success);
-        params = new PlaybackParams();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            params = new PlaybackParams();
+        }
     }
 
     @Override
@@ -41,15 +44,20 @@ public class GestureControl extends GestureDetector.SimpleOnGestureListener {
                         count++;
                         ((Vibrator)c.getSystemService(VIBRATOR_SERVICE)).vibrate(150);
                         float r = (float) Math.random() + 0.5f;
-                        params.setPitch(r);
-                        dig.setPlaybackParams(params);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            params.setPitch(r);
+                            dig.setPlaybackParams(params);
+                        }
+
                         dig.start();
                     } else if (e2.getY() < e1.getY()) {
                         count++;
                         ((Vibrator)c.getSystemService(VIBRATOR_SERVICE)).vibrate(150);
                         float r = (float) Math.random() + 0.5f;
-                        params.setPitch(r);
-                        dig.setPlaybackParams(params);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            params.setPitch(r);
+                            dig.setPlaybackParams(params);
+                        }
                         dig.start();
                     }
 

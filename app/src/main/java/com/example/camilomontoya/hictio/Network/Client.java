@@ -2,6 +2,8 @@ package com.example.camilomontoya.hictio.Network;
 
 import android.util.Log;
 
+import com.example.camilomontoya.hictio.Misc.User;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -16,10 +18,14 @@ public class Client implements Runnable {
     private Observer boss;
 
     //ADDRESS
-    //private final static String ADDRESS = "172.30.181.125";
-    private final static String ADDRESS = "192.168.1.104";
+    //private final static String ADDRESS = "172.30.174.202";
+    private final static String ADDRESS = "192.168.1.53";
+    //private final static String ADDRESS = "192.168.1.102";
+    //private final static String ADDRESS = "192.168.1.53";
+    //private final static String ADDRESS = "192.168.1.100";
     private static final int PORT = 5000;
     private static boolean online;
+    private boolean isConnected;
 
     private Client() {
         s = null;
@@ -41,7 +47,7 @@ public class Client implements Runnable {
                         Log.d("Cliente", "Iniciando conexion");
                         s = new Socket(InetAddress.getByName(ADDRESS), PORT);
                         //Conection request
-                        send("conect");
+                        send(User.getUID());
                         online = true;
                         new Thread(ref).start();
                         Log.d("Cliente", "Conectado");
@@ -74,12 +80,15 @@ public class Client implements Runnable {
         try {
             DataInputStream in = new DataInputStream(s.getInputStream());
             String str = in.readUTF();
-            Log.d("ClienteMensaje", "Llego mensaje");
+            Log.d("ClienteMensaje", "Msg: " + str);
             boss.update(null, str);
 
             if (str.contains("offline")) {
                 online = false;
                 forceDisconection();
+            } else if (str.contains("acuario")) {
+                isConnected = true;
+                boss.update(null, "server_online");
             }
 
         } catch (IOException e) {
@@ -130,5 +139,7 @@ public class Client implements Runnable {
         this.boss = boss;
     }
 
-
+    public boolean isConnected() {
+        return isConnected;
+    }
 }

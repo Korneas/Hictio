@@ -1,6 +1,7 @@
 package com.example.camilomontoya.hictio.Misc;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -13,7 +14,7 @@ import android.widget.TextView;
 
 import com.example.camilomontoya.hictio.AboutActivity;
 import com.example.camilomontoya.hictio.PoolActivity;
-import com.example.camilomontoya.hictio.NavActivity;
+import com.example.camilomontoya.hictio.ExploreActivity;
 import com.example.camilomontoya.hictio.OptionsActivity;
 import com.example.camilomontoya.hictio.R;
 
@@ -29,23 +30,17 @@ public class MenuFragment extends Fragment {
     private Handler handler;
     private Runnable oneTap;
 
+    private MediaPlayer[] menuPlayer;
+
     private ArrayList activityList;
 
     public MenuFragment() {
 
         activityList = new ArrayList<>();
-        activityList.add(NavActivity.class);
+        activityList.add(ExploreActivity.class);
         activityList.add(PoolActivity.class);
         activityList.add(OptionsActivity.class);
         activityList.add(AboutActivity.class);
-        handler = new Handler();
-        oneTap = new Runnable() {
-            @Override
-            public void run() {
-                k = 0;
-                HictioPlayer.getRef().playMenu(type);
-            }
-        };
     }
 
     public static MenuFragment newInstance(String titulo, int type) {
@@ -63,6 +58,21 @@ public class MenuFragment extends Fragment {
         if (getArguments() != null) {
             titulo = getArguments().getString(PARAM1);
             type = getArguments().getInt(PARAM2);
+
+            menuPlayer = new MediaPlayer[4];
+            menuPlayer[0] = MediaPlayer.create(getContext(), R.raw.navigate);
+            menuPlayer[1] = MediaPlayer.create(getContext(), R.raw.album);
+            menuPlayer[2] = MediaPlayer.create(getContext(), R.raw.options);
+            menuPlayer[3] = MediaPlayer.create(getContext(), R.raw.about);
+
+            handler = new Handler();
+            oneTap = new Runnable() {
+                @Override
+                public void run() {
+                    k = 0;
+                    menuPlayer[type].start();
+                }
+            };
         }
     }
 
