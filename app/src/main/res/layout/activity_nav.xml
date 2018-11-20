@@ -10,24 +10,152 @@
     <ImageView
         android:id="@+id/bgNavigate"
         android:layout_width="match_parent"
-
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/bg_start" />
+        android:src="@drawable/bg_start"
+        android:contentDescription="background"/>
 
-    <ImageView
-        android:id="@+id/shipNav"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+    <com.john.waveview.WaveView
+        android:id="@+id/wave_view"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
         android:layout_marginTop="8dp"
-        android:scaleType="centerCrop"
+        android:background="#00000000"
+        app:above_wave_color="@color/colorAccentHictio"
+        app:blow_wave_color="@color/colorAccentHictio"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_directions_boat_black_24dp" />
+        app:layout_constraintVertical_bias="1.0"
+        app:progress="80"
+        app:wave_height="large"
+        app:wave_hz="fast"
+        app:wave_length="middle" />
+
+    <!--<com.dnkilic.waveform.WaveView-->
+        <!--android:id="@+id/waveview"-->
+        <!--android:layout_width="300dp"-->
+        <!--android:layout_height="80dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--app:deneme="true"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_bias="0.0"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent"-->
+        <!--app:layout_constraintVertical_bias="1.0"/>-->
+
+    <ImageView
+        android:id="@+id/aurora"
+        android:layout_width="150dp"
+        android:layout_height="110dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/aurora_profile"
+        android:contentDescription="aurora"/>
+
+    <ImageView
+        android:id="@+id/dialog_box"
+        android:layout_width="340dp"
+        android:layout_height="120dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:contentDescription="dialog_box"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.78"
+        app:srcCompat="@drawable/dialog_box" />
+
+    <TextView
+        android:id="@+id/aurora_text"
+        android:layout_width="320dp"
+        android:layout_height="50dp"
+        android:text="Hola"
+        android:textAlignment="textEnd"
+        android:textColor="@color/colorAccentHictio"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toBottomOf="@+id/dialog_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dialog_box"
+        app:layout_constraintVertical_bias="0.41000003" />
+
+    <ImageView
+        android:id="@+id/oscar_silhoutte"
+        android:layout_width="300dp"
+        android:layout_height="280dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/dialog_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bgNavigate"
+        app:srcCompat="@drawable/oscar_silhoutte" />
+
+    <ImageView
+        android:id="@+id/verticalscroll"
+        android:layout_width="120dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/oscar_silhoutte"
+        app:layout_constraintEnd_toEndOf="@+id/oscar_silhoutte"
+        app:layout_constraintStart_toStartOf="@+id/oscar_silhoutte"
+        app:layout_constraintTop_toTopOf="@+id/oscar_silhoutte"
+        app:layout_constraintVertical_bias="0.45"
+        app:srcCompat="@drawable/vertical_scroll" />
+
+    <ImageView
+        android:id="@+id/oscar_explore"
+        android:layout_width="300dp"
+        android:layout_height="280dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/dialog_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bgNavigate"
+        app:srcCompat="@drawable/album_oscar" />
+
+    <ImageView
+        android:id="@+id/info_silhoutte"
+        android:layout_width="340dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/dialog_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/infopoint" />
+
+    <ImageView
+        android:id="@+id/vertialup"
+        android:layout_width="70dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/oscar_silhoutte"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/oscar_silhoutte"
+        app:layout_constraintVertical_bias="0.1"
+        app:srcCompat="@drawable/vertical_up" />
 
 </android.support.constraint.ConstraintLayout>

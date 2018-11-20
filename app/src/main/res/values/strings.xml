@@ -4,10 +4,41 @@
     <string name="title_explore">Explorar</string>
     <string name="title_album">Álbum</string>
     <string name="title_options">Opciones</string>
-    <string name="title_about">Acerca de\nHictio</string>
+    <string name="title_about">Acerca de Hictio</string>
     <string name="talk_back">Esta aplicación no necesita del Talk Back para funcionar, en estos momentos puedes apagarlo y tocar la pantalla para continuar</string>
     <string name="title_volume_music">Volumen de música</string>
     <string name="title_volume_guide">Volumen de guía</string>
     <string name="title_voice_guide">Voz del guía</string>
     <string name="title_logout">Cerrar Sesión</string>
+    <string name="menu_explore">Busca a los peces expuestos en el acuario del Zoológico de Cali</string>
+    <string name="menu_album">Revisa los peces que has aprendido a llamar dentro del Zoológico de Cali</string>
+    <string name="menu_opciones">Configura el idioma, la voz y las políticas de privacidad que tiene Hictio</string>
+    <string name="menu_about">Conoce qué es Hictio y por qué es importante para el desarrollo de la ciudad de Cali</string>
+
+    <!-- AURORA -->
+    <string-array name="aurora_chat">
+        0<item name="aurora_saludo">¡Hola visitante! mi nombre es Aurora.\nHoy te guiaré en el acuario del Zoológico de Cali.</item>
+        1<item name="aurora_accion">Vamos a recorrer el lugar, en busca de\npistas para llamar a los peces.</item>
+        2<item name="aurora_recuerda">Y recuerda siempre tener la manilla puesta para las interacciones de Hictio</item>
+        3<item name="aurora_cerca">Parece que te estás acercando a la\nexhibición del pez Óscar</item>
+        4<item name="aurora_aprender">Para llamarlo y que se acerque\na ti, acaricia la pantalla</item>
+        5<item name="aurora_great">¡Muy bien, has llamado al pez Óscar!\nSigamos en busca de más peces</item>
+        6<item name="aurora_goto">Ahora puedes aprender las características del pez en el punto de información</item>
+        7<item name="aurora_tutorial">Desliza el dedo hacia arriba para escuchar donde se encuentra</item>
+        8<item name="aurora_chapoteo">¿Escuchaste ese chapoteo? Creo que es el punto de información acércate</item>
+        9<item name="aurora_inspot">Te encuentras en el punto informativo, tócalo para reconocer los peces que tiene...</item>
+        10<item name="aurora_inspot2">...y ubica si tiene un pez que hayas aprendido a llamar en el recorrido.</item>
+        11<item name="aurora_putbracelet">Al terminar, coloca tu manilla en el lector que se ubica en el centro del módulo...</item>
+        12<item name="aurora_putbracelet2">...lo puedes identificar con el icono de tu manilla.</item>
+        13<item name="aurora_inoscar">Estás en el pez Óscar, acaricia la pantalla hacia abajo para llamarlo.</item>
+        14<item name="aurora_inoscar2">A continuación tócalo en el punto de información para conocer sus características.</item>
+        15<item name="aurora_oscarhead">El pez Óscar  vive en la cuenca del RíoAmazonas y alcanza un tamaño de 38 cm de longitud.</item>
+        16<item name="aurora_oscarbody">El pez Óscar es un pez inteligente lo que le permite desarrollar una personalidad, y en cautiverio se puede entrenar para ser acariciado.</item>
+        17<item name="aurora_oscarbody2">Se alimenta de otros peces más pequeños, insectos y crustáceos.</item>
+        18<item name="aurora_oscartail">El pez Óscar le gusta nadar en aguas limpias y tranquilas entre las ramas y raíces sumergidas.</item>
+        19<item name="aurora_oscartail2">Es un pez que le gusta la compañía de otras especies tranquilas como el pez moneda.</item>
+        20<item name="aurora_oscarcomplete">¡Muy bien! Has desbloqueado todas las historias del pez Óscar, ahora está disponible en tu álbum</item>
+        21<item name="aurora_bye">Te agradecemos tu visita al acuario del Zoológico de Cali y esperamos que te hayas divertido con Hictio. ¡Adiós!</item>
+    </string-array>
+
 </resources>

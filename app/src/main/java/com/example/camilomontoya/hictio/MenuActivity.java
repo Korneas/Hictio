@@ -61,10 +61,10 @@ public class MenuActivity extends AppCompatActivity {
 
         viewPager = (ViewPager) findViewById(R.id.menuPager);
         final List<Fragment> fragments = new ArrayList<>();
-        fragments.add(MenuFragment.newInstance(getResources().getString(R.string.title_explore), 0));
-        fragments.add(MenuFragment.newInstance(getResources().getString(R.string.title_album), 1));
-        fragments.add(MenuFragment.newInstance(getResources().getString(R.string.title_options), 2));
-        fragments.add(MenuFragment.newInstance(getResources().getString(R.string.title_about), 3));
+        fragments.add(MenuFragment.newInstance(getResources().getString(R.string.title_explore), 0, getString(R.string.menu_explore), R.drawable.menu_explorar));
+        fragments.add(MenuFragment.newInstance(getResources().getString(R.string.title_album), 1, getString(R.string.menu_album), R.drawable.menu_album));
+        fragments.add(MenuFragment.newInstance(getResources().getString(R.string.title_options), 2, getString(R.string.menu_opciones), R.drawable.menu_opciones));
+        fragments.add(MenuFragment.newInstance(getResources().getString(R.string.title_about), 3, getString(R.string.menu_about), R.drawable.menu_acerca));
         adapter = new SliderPagerAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(fragments.size()*2);

@@ -92,8 +92,8 @@ public class HomeActivity extends AppCompatActivity {
         */
 
         Typo.getInstance().setTitle(Typeface.createFromAsset(getAssets(), "fonts/BarlowCondensed-Bold.ttf"));
-        Typo.getInstance().setSpecial(Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf"));
-        Typo.getInstance().setContent(Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf"));
+        Typo.getInstance().setSpecial(Typeface.createFromAsset(getAssets(), "fonts/Pangolin-Regular.ttf"));
+        Typo.getInstance().setContent(Typeface.createFromAsset(getAssets(), "fonts/Pangolin-Regular.ttf"));
 
         subtitle = (TextView) findViewById(R.id.textSubtitle);
         home = (ConstraintLayout) findViewById(R.id.homeLayout);

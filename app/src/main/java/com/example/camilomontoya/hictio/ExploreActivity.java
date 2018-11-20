@@ -20,31 +20,45 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.camilomontoya.hictio.Fishes.OscarActivity;
 import com.example.camilomontoya.hictio.Fishes.PiranhaActivity;
 import com.example.camilomontoya.hictio.Misc.BackgroundMusic;
 import com.example.camilomontoya.hictio.Misc.CloseGesture;
+import com.example.camilomontoya.hictio.Misc.Typo;
 import com.example.camilomontoya.hictio.Misc.User;
 import com.example.camilomontoya.hictio.Network.Client;
+import com.john.waveview.WaveView;
 
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.zip.InflaterInputStream;
 
 public class ExploreActivity extends AppCompatActivity implements Observer {
 
     private final static String CHANNEL_ID = "Notifications";
     private static final int NOTIFICATION_ID = 0;
     private final static int NO_PATH = -1, OSCAR = 0, PIRANHA = 1;
-    private MediaPlayer[] navPlayer;
+
+    private MediaPlayer[] navPlayer, oscarPlayer, oscarLearn;
+    private MediaPlayer success, beforeSpeech, touchFish;
+    private boolean availableOscar, callingPI;
 
     private ConstraintLayout cL;
+    private TextView aurora;
+    private ImageView auroraProfile, auroraDialog;
+    private ImageView oscarSilhoutte, verticalScroll, oscarExplore;
+    private ImageView infoSilhoutte, verticalUp;
+    private String[] auroraTxt;
 
     private ScaleGestureDetector gestureDetector;
     private CloseGesture closeGesture;
@@ -67,14 +81,10 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
         }
     };
 
-    private int currentFish = 10;
-    private int currentAudio;
-    private int k;
+    private int currentAudio, k;
     private ProgressDialog progress;
     private boolean audioPlaying;
     private boolean[] steps;
-    private final static String MARK = "MARK";
-    private final static int[] MARK_TYPE = {0, 1, 2};
 
     private Handler repeatFish;
 
@@ -86,6 +96,7 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
         doBindService();
 
         steps = new boolean[3];
+        auroraTxt = getResources().getStringArray(R.array.aurora_chat);
         navPlayer = new MediaPlayer[5];
         navPlayer[0] = MediaPlayer.create(getApplicationContext(), R.raw.hello_test);
         navPlayer[1] = MediaPlayer.create(getApplicationContext(), R.raw.search_test);
@@ -97,33 +108,83 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 navPlayer[1].start();
-                steps[0] = true;
+                aurora.setText(auroraTxt[1]);
             }
         });
 
-        /*for (int i = 1; i < navPlayer.length; i++) {
-            navPlayer[i].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    navPlayer[1].stop();
-                    navPlayer[1].release();
-                    navPlayer[1] = null;
-                }
-            });
-        }*/
+        navPlayer[1].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                aurora.setText(auroraTxt[2]);
+            }
+        });
+
+        navPlayer[2].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                verticalUp.setVisibility(View.VISIBLE);
+            }
+        });
+
+        oscarPlayer = new MediaPlayer[3];
+        oscarLearn = new MediaPlayer[4];
+        oscarPlayer[0] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_01);
+        oscarPlayer[1] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_02);
+        oscarPlayer[2] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_03);
+        oscarLearn[0] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_fine);
+        oscarLearn[1] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_call);
+        oscarLearn[2] = MediaPlayer.create(getApplicationContext(), R.raw.inoscar);
+        oscarLearn[3] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_before);
+
+        oscarLearn[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                aurora.setText(auroraTxt[6]);
+                navPlayer[2].start();
+                oscarExplore.setVisibility(View.INVISIBLE);
+                infoSilhoutte.setVisibility(View.VISIBLE);
+                callingPI = true;
+            }
+        });
+
+        oscarLearn[2].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                oscarLearn[3].start();
+                aurora.setText(auroraTxt[4]);
+                availableOscar = true;
+                verticalScroll.setVisibility(View.VISIBLE);
+            }
+        });
 
         closeGesture = new CloseGesture(this);
         gestureDetector = new ScaleGestureDetector(this, closeGesture);
         closeGesture.setGestureDetector(gestureDetector);
 
         cL = (ConstraintLayout) findViewById(R.id.nav_layout);
+        aurora = (TextView) findViewById(R.id.aurora_text);
+        auroraProfile = (ImageView) findViewById(R.id.aurora);
+        auroraDialog = (ImageView) findViewById(R.id.dialog_box);
 
-        cL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //repeate();
-            }
-        });
+        aurora.setTypeface(Typo.getInstance().getContent());
+        auroraProfile.setVisibility(View.INVISIBLE);
+        auroraDialog.setVisibility(View.INVISIBLE);
+
+        oscarSilhoutte = (ImageView) findViewById(R.id.oscar_silhoutte);
+        verticalScroll = (ImageView) findViewById(R.id.verticalscroll);
+
+        oscarSilhoutte.setVisibility(View.INVISIBLE);
+        verticalScroll.setVisibility(View.INVISIBLE);
+
+        oscarExplore = (ImageView) findViewById(R.id.oscar_explore);
+
+        oscarExplore.setVisibility(View.INVISIBLE);
+
+        infoSilhoutte = (ImageView) findViewById(R.id.info_silhoutte);
+        verticalUp = (ImageView) findViewById(R.id.vertialup);
+
+        infoSilhoutte.setVisibility(View.INVISIBLE);
+        verticalUp.setVisibility(View.INVISIBLE);
 
         cL.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -145,23 +206,41 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
                     pointerY = event.getY(0);
+//                    DisplayMetrics dm = new DisplayMetrics();
+//                    getWindowManager().getDefaultDisplay().getMetrics(dm);
+//                    com.dnkilic.waveform.WaveView waveView = (com.dnkilic.waveform.WaveView) findViewById(R.id.waveview);
+//                    waveView.initialize(dm);
+//                    waveView.speechStarted();
                     break;
                 case MotionEvent.ACTION_MOVE:
                     pointerCurrentY = event.getY(0);
                     break;
                 case MotionEvent.ACTION_UP:
                     float diff = pointerY - pointerCurrentY;
-                    if (diff >= 30) {
-                        Client.getInstance().send("haptic");
-                        if (!User.getRef().isHapticTutorial() && User.getRef().getFishGesture(OSCAR)) {
-                            //FELICITAR POR EL TUTORIAL
-                            (new Handler()).postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    navPlayer[4].start();
-                                }
-                            }, 1000);
-                            User.getRef().setHapticTutorial(true);
+                    if(availableOscar){
+                        if(diff < 0){
+                            oscarLearn[0].start();
+                            aurora.setText(auroraTxt[5]);
+                            verticalScroll.setVisibility(View.INVISIBLE);
+                            oscarSilhoutte.setVisibility(View.INVISIBLE);
+                            oscarExplore.setVisibility(View.VISIBLE);
+                            availableOscar = false;
+                        }
+                    }
+                    if(callingPI) {
+                        if (diff >= 250) {
+                            Client.getInstance().send("haptic");
+                            if (!User.getRef().isHapticTutorial() && User.getRef().getFishGesture(OSCAR)) {
+                                //FELICITAR POR EL TUTORIAL
+                                (new Handler()).postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        navPlayer[4].start();
+                                    }
+                                }, 1000);
+                                callingPI = false;
+                                User.getRef().setHapticTutorial(true);
+                            }
                         }
                     }
                     break;
@@ -170,7 +249,6 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
             }
         } else {
             if (User.getRef().getFishState(OSCAR) && User.getRef().getFishState(PIRANHA)) {
-                //gestureDetector.onTouchEvent(event);
             }
         }
     }
@@ -185,6 +263,7 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
 
             if (!steps[0] && !steps[1]) {
                 navPlayer[0].start();
+                aurora.setText(auroraTxt[0]);
             }
 
         }
@@ -217,13 +296,17 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
             if (str.contains("beacon")) {
                 User.getRef().setNavTutorial(true);
                 if (str.contains("oscar") && !User.getRef().getFishGesture(OSCAR)) {
-                    currentFish = OSCAR;
                     if (User.getRef().isOutApp()) {
-                        createNotification("Estas cerca del pez Oscar", "Ingresa a Hictio para aprenderlo a llamar", OSCAR);
+                        createNotification("Estas cerca del pez Oscar", "Ingresa a Hictio para aprenderlo a llamar");
                     } else {
-                        Intent fish = new Intent(this, OscarActivity.class);
-                        fish.putExtra(MARK, MARK_TYPE[0]);
-                        startActivity(fish);
+                        oscarLearn[2].start();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                aurora.setText(auroraTxt[3]);
+                                oscarSilhoutte.setVisibility(View.VISIBLE);
+                            }
+                        });
                     }
                     ;
                 } else if (str.contains("piranha") && !User.getRef().getFishGesture(PIRANHA)) {
@@ -236,15 +319,13 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
             if (str.contains("oscar-piranha")) {
                 if (User.getRef().getFishGesture(OSCAR)) {
                     Log.d("NFC", "Mensaje: Llego tarjeta");
-                    Intent fish = new Intent(this, OscarActivity.class);
-                    fish.putExtra(MARK, MARK_TYPE[1]);
-                    startActivity(fish);
+                    // -----------------    -   -   -   -   -   -   -   -   -   -   -   -   ESTOY EN OSCAR
                 }
             }
 
             if (str.contains("acuario")) {
                 if (User.getRef().isOutApp())
-                    createNotification("Estas acercándote al Acuario", "Ingresa a Hictio para explorar las especies del lugar", NO_PATH);
+                    createNotification("Estas acercándote al Acuario", "Ingresa a Hictio para explorar las especies del lugar");
             }
 
             Log.d("Cliente_Navegacion", "Mensaje: " + str);
@@ -295,7 +376,10 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
                 toastPost("Conexion fallida");
             } else {
                 toastPost("Conexion completa");
+                auroraProfile.setVisibility(View.VISIBLE);
+                auroraDialog.setVisibility(View.VISIBLE);
                 if (!User.getRef().isOutApp()) navPlayer[0].start();
+                aurora.setText(auroraTxt[0]);
             }
             progress.dismiss();
         }
@@ -319,7 +403,7 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
         }
     }
 
-    public void createNotification(String title, String subtitle, int path) {
+    public void createNotification(String title, String subtitle) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID);
         builder.setSmallIcon(R.drawable.ic_directions_boat_black_24dp);
         builder.setContentTitle(title);
@@ -330,13 +414,6 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
         builder.setAutoCancel(true);
 
         Intent explore = new Intent(this, ExploreActivity.class);
-
-        switch (path){
-            case 0:
-                explore = new Intent(this, OscarActivity.class);
-                explore.putExtra(MARK, MARK_TYPE[0]);
-                break;
-        }
 
         explore.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         builder.setContentIntent(PendingIntent.getActivity(this, 0, explore, PendingIntent.FLAG_CANCEL_CURRENT));
