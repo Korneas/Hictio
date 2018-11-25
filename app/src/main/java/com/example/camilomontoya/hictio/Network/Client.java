@@ -18,8 +18,8 @@ public class Client implements Runnable {
     private Observer boss;
 
     //ADDRESS
-    //private final static String ADDRESS = "172.30.174.202";
-    private final static String ADDRESS = "192.168.1.53";
+    private final static String ADDRESS = "172.30.171.190";
+    //private final static String ADDRESS = "192.168.1.53";
     //private final static String ADDRESS = "192.168.1.102";
     //private final static String ADDRESS = "192.168.1.53";
     //private final static String ADDRESS = "192.168.1.100";

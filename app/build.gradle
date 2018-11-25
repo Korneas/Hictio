@@ -33,5 +33,5 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.airbnb.android:lottie:2.6.1'
     implementation 'com.github.john990:WaveView:v0.9'
-//    implementation 'com.dnkilic.waveform:waveform:0.9.3'
+    implementation 'com.dnkilic.waveform:waveform:0.9.3'
 }

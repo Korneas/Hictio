@@ -5,6 +5,8 @@
     android:id="@+id/nav_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimaryHictio"
+    android:backgroundTint="@color/colorPrimaryHictio"
     tools:context=".ExploreActivity">
 
     <ImageView
@@ -15,36 +17,36 @@
         android:src="@drawable/bg_start"
         android:contentDescription="background"/>
 
-    <com.john.waveview.WaveView
-        android:id="@+id/wave_view"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="8dp"
-        android:background="#00000000"
-        app:above_wave_color="@color/colorAccentHictio"
-        app:blow_wave_color="@color/colorAccentHictio"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:progress="80"
-        app:wave_height="large"
-        app:wave_hz="fast"
-        app:wave_length="middle" />
-
-    <!--<com.dnkilic.waveform.WaveView-->
-        <!--android:id="@+id/waveview"-->
-        <!--android:layout_width="300dp"-->
-        <!--android:layout_height="80dp"-->
+    <!--<com.john.waveview.WaveView-->
+        <!--android:id="@+id/wave_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="60dp"-->
         <!--android:layout_marginTop="8dp"-->
-        <!--app:deneme="true"-->
+        <!--android:background="#00000000"-->
+        <!--app:above_wave_color="@color/colorAccentHictio"-->
+        <!--app:blow_wave_color="@color/colorAccentHictio"-->
         <!--app:layout_constraintBottom_toBottomOf="parent"-->
         <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="0.0"-->
         <!--app:layout_constraintStart_toStartOf="parent"-->
         <!--app:layout_constraintTop_toTopOf="parent"-->
-        <!--app:layout_constraintVertical_bias="1.0"/>-->
+        <!--app:layout_constraintVertical_bias="1.0"-->
+        <!--app:progress="80"-->
+        <!--app:wave_height="large"-->
+        <!--app:wave_hz="fast"-->
+        <!--app:wave_length="middle" />-->
+
+    <com.dnkilic.waveform.WaveView
+        android:id="@+id/waveview"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="8dp"
+        app:deneme="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"/>
 
     <ImageView
         android:id="@+id/aurora"
@@ -85,11 +87,12 @@
         android:textAlignment="textEnd"
         android:textColor="@color/colorAccentHictio"
         android:textSize="14dp"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="@+id/dialog_box"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/dialog_box"
-        app:layout_constraintVertical_bias="0.41000003" />
+        app:layout_constraintVertical_bias="0.4" />
 
     <ImageView
         android:id="@+id/oscar_silhoutte"
@@ -130,7 +133,7 @@
     <ImageView
         android:id="@+id/info_silhoutte"
         android:layout_width="340dp"
-        android:layout_height="200dp"
+        android:layout_height="280dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -157,5 +160,50 @@
         app:layout_constraintTop_toTopOf="@+id/oscar_silhoutte"
         app:layout_constraintVertical_bias="0.1"
         app:srcCompat="@drawable/vertical_up" />
+
+    <ImageView
+        android:id="@+id/oscar_head"
+        android:layout_width="300dp"
+        android:layout_height="280dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/dialog_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/oscar_touch_head" />
+
+    <ImageView
+        android:id="@+id/oscar_body"
+        android:layout_width="300dp"
+        android:layout_height="280dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/dialog_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/oscar_touch_body" />
+
+    <ImageView
+        android:id="@+id/oscar_tail"
+        android:layout_width="300dp"
+        android:layout_height="280dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/dialog_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/oscar_touch_tail" />
 
 </android.support.constraint.ConstraintLayout>

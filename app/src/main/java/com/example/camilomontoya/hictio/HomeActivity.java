@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -38,6 +39,8 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity {
 
     public static final String SHARED_PREFS = "sharedPrefs";
+
+    private MediaPlayer intro;
 
     private boolean mIsBound;
     private BackgroundMusic mServ;
@@ -91,6 +94,8 @@ public class HomeActivity extends AppCompatActivity {
         manager.addView(view, localLayoutParams);
         */
 
+        intro = MediaPlayer.create(getApplicationContext(), R.raw.)
+
         Typo.getInstance().setTitle(Typeface.createFromAsset(getAssets(), "fonts/BarlowCondensed-Bold.ttf"));
         Typo.getInstance().setSpecial(Typeface.createFromAsset(getAssets(), "fonts/Pangolin-Regular.ttf"));
         Typo.getInstance().setContent(Typeface.createFromAsset(getAssets(), "fonts/Pangolin-Regular.ttf"));
@@ -103,7 +108,9 @@ public class HomeActivity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, MenuActivity.class));
+                Intent i = new Intent(HomeActivity.this, TutorialActivity.class);
+                //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
                 overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
 
             }
@@ -157,7 +164,7 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        logout();
+        //logout();
     }
 
     @Override

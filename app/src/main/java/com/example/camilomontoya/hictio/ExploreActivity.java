@@ -29,19 +29,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.camilomontoya.hictio.Fishes.OscarActivity;
-import com.example.camilomontoya.hictio.Fishes.PiranhaActivity;
 import com.example.camilomontoya.hictio.Misc.BackgroundMusic;
 import com.example.camilomontoya.hictio.Misc.CloseGesture;
 import com.example.camilomontoya.hictio.Misc.Typo;
 import com.example.camilomontoya.hictio.Misc.User;
 import com.example.camilomontoya.hictio.Network.Client;
-import com.john.waveview.WaveView;
 
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.zip.InflaterInputStream;
 
 public class ExploreActivity extends AppCompatActivity implements Observer {
 
@@ -51,13 +47,14 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
 
     private MediaPlayer[] navPlayer, oscarPlayer, oscarLearn;
     private MediaPlayer success, beforeSpeech, touchFish;
-    private boolean availableOscar, callingPI;
+    private boolean audioRunning, availableOscar, touch, callingPI;
 
     private ConstraintLayout cL;
     private TextView aurora;
     private ImageView auroraProfile, auroraDialog;
     private ImageView oscarSilhoutte, verticalScroll, oscarExplore;
     private ImageView infoSilhoutte, verticalUp;
+    private ImageView oHead, oBody, oTail;
     private String[] auroraTxt;
 
     private ScaleGestureDetector gestureDetector;
@@ -122,12 +119,20 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
         navPlayer[2].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
+                aurora.setText(auroraTxt[7]);
                 verticalUp.setVisibility(View.VISIBLE);
             }
         });
 
+        navPlayer[3].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                aurora.setText(auroraTxt[10]);
+            }
+        });
+
         oscarPlayer = new MediaPlayer[3];
-        oscarLearn = new MediaPlayer[4];
+        oscarLearn = new MediaPlayer[5];
         oscarPlayer[0] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_01);
         oscarPlayer[1] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_02);
         oscarPlayer[2] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_03);
@@ -135,6 +140,7 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
         oscarLearn[1] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_call);
         oscarLearn[2] = MediaPlayer.create(getApplicationContext(), R.raw.inoscar);
         oscarLearn[3] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_before);
+        oscarLearn[4] = MediaPlayer.create(getApplicationContext(), R.raw.addedtoalbum);
 
         oscarLearn[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -154,6 +160,13 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
                 aurora.setText(auroraTxt[4]);
                 availableOscar = true;
                 verticalScroll.setVisibility(View.VISIBLE);
+            }
+        });
+
+        oscarLearn[3].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                touch = true;
             }
         });
 
@@ -186,6 +199,10 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
         infoSilhoutte.setVisibility(View.INVISIBLE);
         verticalUp.setVisibility(View.INVISIBLE);
 
+        oHead = (ImageView) findViewById(R.id.oscar_head);
+        oBody = (ImageView) findViewById(R.id.oscar_body);
+        oTail = (ImageView) findViewById(R.id.oscar_tail);
+
         cL.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -206,36 +223,40 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
                     pointerY = event.getY(0);
-//                    DisplayMetrics dm = new DisplayMetrics();
-//                    getWindowManager().getDefaultDisplay().getMetrics(dm);
-//                    com.dnkilic.waveform.WaveView waveView = (com.dnkilic.waveform.WaveView) findViewById(R.id.waveview);
-//                    waveView.initialize(dm);
-//                    waveView.speechStarted();
+                    DisplayMetrics dm = new DisplayMetrics();
+                    getWindowManager().getDefaultDisplay().getMetrics(dm);
+                    com.dnkilic.waveform.WaveView waveView = (com.dnkilic.waveform.WaveView) findViewById(R.id.waveview);
+                    waveView.initialize(dm);
+                    waveView.speechStarted();
                     break;
                 case MotionEvent.ACTION_MOVE:
                     pointerCurrentY = event.getY(0);
                     break;
                 case MotionEvent.ACTION_UP:
                     float diff = pointerY - pointerCurrentY;
-                    if(availableOscar){
-                        if(diff < 0){
+                    if(diff < 0){
+                        if(availableOscar){
                             oscarLearn[0].start();
                             aurora.setText(auroraTxt[5]);
                             verticalScroll.setVisibility(View.INVISIBLE);
                             oscarSilhoutte.setVisibility(View.INVISIBLE);
                             oscarExplore.setVisibility(View.VISIBLE);
                             availableOscar = false;
+                        } else if(touch){
+                            aurora.setText(auroraTxt[14]);
+                            touch = false;
                         }
                     }
                     if(callingPI) {
                         if (diff >= 250) {
                             Client.getInstance().send("haptic");
-                            if (!User.getRef().isHapticTutorial() && User.getRef().getFishGesture(OSCAR)) {
+                            if (!User.getRef().isHapticTutorial()) {
                                 //FELICITAR POR EL TUTORIAL
                                 (new Handler()).postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
                                         navPlayer[4].start();
+                                        aurora.setText(auroraTxt[8]);
                                     }
                                 }, 1000);
                                 callingPI = false;
@@ -313,19 +334,149 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
 
                 } else if (str.contains("spot")) {
                     navPlayer[3].start();
+                    aurora.setText(auroraTxt[9]);
+                    infoSilhoutte.setImageResource(R.drawable.modulo);
+                    infoSilhoutte.setVisibility(View.VISIBLE);
                 }
             }
 
             if (str.contains("oscar-piranha")) {
                 if (User.getRef().getFishGesture(OSCAR)) {
                     Log.d("NFC", "Mensaje: Llego tarjeta");
-                    // -----------------    -   -   -   -   -   -   -   -   -   -   -   -   ESTOY EN OSCAR
+                    oscarLearn[2].start();
+                    aurora.setText(auroraTxt[13]);
+                    infoSilhoutte.setVisibility(View.INVISIBLE);
+                    oscarSilhoutte.setVisibility(View.VISIBLE);
+                    verticalScroll.setVisibility(View.VISIBLE);
+                }
+            } else if(str.contains("oscar")){
+                String[] strOscar = str.split("-");
+                if (touch && !strOscar[1].contains("piranha")) {
+                    verticalScroll.setVisibility(View.INVISIBLE);
+                    if (strOscar[1].contains("w") && !audioRunning) {
+                        Log.d("OscarPlayer", "Audio 1");
+                        audioRunning = true;
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                oHead.setVisibility(View.VISIBLE);
+                                aurora.setText(auroraTxt[15]);
+                            }
+                        });
+
+                        if (beforeSpeech != null) {
+                            beforeSpeech.release();
+                            beforeSpeech = MediaPlayer.create(getApplicationContext(), R.raw.speech);
+                        }
+                        beforeSpeech.start();
+                        beforeSpeech.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                oscarPlayer[0].start();
+                            }
+                        });
+
+                        oscarPlayer[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                audioRunning = false;
+                                User.getRef().setFishes(OSCAR, 0, true);
+                                oscarPlayer[0].release();
+                                if(User.getRef().getFishState(OSCAR) && !audioRunning){
+                                    audioRunning = true;
+                                    oscarLearn[4].start();
+                                    aurora.setText(auroraTxt[20]);
+                                }
+                            }
+                        });
+                    } else if(strOscar[1].contains("a") && !audioRunning){
+                        Log.d("OscarPlayer", "Audio 2");
+                        audioRunning = true;
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                oBody.setVisibility(View.VISIBLE);
+                                aurora.setText(auroraTxt[16]);
+                            }
+                        });
+
+                        if (beforeSpeech != null) {
+                            beforeSpeech.release();
+                            beforeSpeech = MediaPlayer.create(getApplicationContext(), R.raw.speech);
+                        }
+                        beforeSpeech.start();
+                        beforeSpeech.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                oscarPlayer[1].start();
+                            }
+                        });
+                        oscarPlayer[1].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                audioRunning = false;
+                                User.getRef().setFishes(OSCAR, 1, true);
+                                aurora.setText(auroraTxt[17]);
+                                oscarPlayer[1].release();
+                                if(User.getRef().getFishState(OSCAR) && !audioRunning){
+                                    audioRunning = true;
+                                    oscarLearn[4].start();
+                                    aurora.setText(auroraTxt[20]);
+                                }
+                            }
+                        });
+                    } else if(strOscar[1].contains("s") && !audioRunning){
+                        Log.d("OscarPlayer", "Audio 2");
+                        audioRunning = true;
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                oTail.setVisibility(View.VISIBLE);
+                                aurora.setText(auroraTxt[18]);
+                            }
+                        });
+
+                        if (beforeSpeech != null) {
+                            beforeSpeech.release();
+                            beforeSpeech = MediaPlayer.create(getApplicationContext(), R.raw.speech);
+                        }
+                        beforeSpeech.start();
+                        beforeSpeech.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                oscarPlayer[2].start();
+                            }
+                        });
+                        oscarPlayer[2].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                audioRunning = false;
+                                User.getRef().setFishes(OSCAR, 2, true);
+                                aurora.setText(auroraTxt[19]);
+                                oscarPlayer[2].release();
+                                if(User.getRef().getFishState(OSCAR) && !audioRunning){
+                                    audioRunning = true;
+                                    oscarLearn[4].start();
+                                    aurora.setText(auroraTxt[20]);
+                                }
+                            }
+                        });
+                    }
+
                 }
             }
 
             if (str.contains("acuario")) {
                 if (User.getRef().isOutApp())
                     createNotification("Estas acercándote al Acuario", "Ingresa a Hictio para explorar las especies del lugar");
+            }
+
+            if(str.contains("x")){
+
+                aurora.setText(auroraTxt[21]);
             }
 
             Log.d("Cliente_Navegacion", "Mensaje: " + str);
