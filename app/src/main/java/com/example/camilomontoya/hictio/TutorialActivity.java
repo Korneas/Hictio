@@ -4,8 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
@@ -25,12 +26,14 @@ public class TutorialActivity extends AppCompatActivity {
 
     private ConstraintLayout cL;
     private ImageView auroraFull, auroraBox, light;
+    private ImageView gesLateral, gesTouch, gesDouble;
     private TextView aurora;
 
+    private AlphaAnimation alphaIn, alphaOut;
     private final static long LIGHT_ANIM = 15000;
-    private final static long SCALE_ANIM = 3000;
-    private final static long ANIM_LONG_TIME = 3000;
-    private final static long ANIM_SHORT_TIME = 1200;
+    private final static long SCALE_ANIM = 1500;
+    private final static long ANIM_LONG_TIME = 1500;
+    private final static long ANIM_SHORT_TIME = 800;
 
     private AnimatorSet animatorSet;
     private int actualTxt;
@@ -38,6 +41,9 @@ public class TutorialActivity extends AppCompatActivity {
     private ObjectAnimator textAlphaIn, textAlphaOut;
     private ObjectAnimator animatorRot, lightAlpha, boxAnimatorAlpha, auroraAlpha, auroraAlphaOut;
     private ScaleAnimation auroraScale, auroraScaleOut, boxAnimatorScale;
+
+    private MediaPlayer[] tutorialPlayer;
+    private MediaPlayer fineAction;
 
     private float pointerX, currentPointerX;
     private int k;
@@ -55,10 +61,64 @@ public class TutorialActivity extends AppCompatActivity {
         auroraFull = (ImageView) findViewById(R.id.aurora_full);
         auroraBox = (ImageView) findViewById(R.id.textbox);
         light = (ImageView) findViewById(R.id.light);
+        gesLateral = (ImageView) findViewById(R.id.ges_lateral);
+        gesTouch = (ImageView) findViewById(R.id.ges_touch);
+        gesDouble = (ImageView) findViewById(R.id.ges_double);
         aurora = (TextView) findViewById(R.id.aurora_tutorial_text);
 
         aurora.setTypeface(Typo.getInstance().getContent());
         final String[] auroraTxt = getResources().getStringArray(R.array.aurora_tutorial);
+
+        // Ges Animation
+        alphaIn = new AlphaAnimation(0f, 1f);
+        alphaIn.setDuration(ANIM_SHORT_TIME);
+        alphaIn.setFillAfter(true);
+
+        alphaOut = new AlphaAnimation(1f, 0f);
+        alphaOut.setDuration(ANIM_SHORT_TIME);
+        alphaOut.setFillAfter(true);
+
+        fineAction = MediaPlayer.create(getApplicationContext(), R.raw.fine);
+
+        tutorialPlayer = new MediaPlayer[5];
+        tutorialPlayer[0] = MediaPlayer.create(getApplicationContext(), R.raw.tutorial_hello);
+        tutorialPlayer[1] = MediaPlayer.create(getApplicationContext(), R.raw.tutorial_intro);
+        tutorialPlayer[2] = MediaPlayer.create(getApplicationContext(), R.raw.tutorial_lateral);
+        tutorialPlayer[3] = MediaPlayer.create(getApplicationContext(), R.raw.tutorial_touch);
+        tutorialPlayer[4] = MediaPlayer.create(getApplicationContext(), R.raw.tutorial_double);
+
+        tutorialPlayer[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                textAlphaOut.start();
+                touch = false;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        tutorialPlayer[1].start();
+                    }
+                }, 500);
+            }
+        });
+
+        tutorialPlayer[1].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                auroraScaleOut.start();
+                auroraAlphaOut.start();
+                textAlphaOut.start();
+                touch = false;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        tutorialPlayer[2].start();
+                        ObjectAnimator anim = ObjectAnimator.ofFloat(gesLateral, View.ALPHA, 0f, 1f);
+                        anim.setDuration(ANIM_SHORT_TIME);
+                        anim.start();
+                    }
+                }, 500);
+            }
+        });
 
         cL.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -121,6 +181,7 @@ public class TutorialActivity extends AppCompatActivity {
                 auroraFull.startAnimation(auroraScale);
                 animatorSet.start();
                 lightAlpha.start();
+                tutorialPlayer[0].start();
             }
         });
 
@@ -166,21 +227,23 @@ public class TutorialActivity extends AppCompatActivity {
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
                     switch (actualTxt) {
-                        case 0:
-                            auroraScaleOut.start();
-                            auroraAlphaOut.start();
-                            textAlphaOut.start();
-                            touch = false;
-                            break;
-                        case 1:
-                            textAlphaOut.start();
-                            touch = false;
-                            break;
                         case 2:
                             pointerX = event.getX();
                             break;
                         case 3:
                             textAlphaOut.start();
+                            gesLateral.setAlpha(0f);
+                            gesTouch.startAnimation(alphaOut);
+                            fineAction.start();
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tutorialPlayer[4].start();
+                                    ObjectAnimator anim = ObjectAnimator.ofFloat(gesDouble, View.ALPHA, 0f, 1f);
+                                    anim.setDuration(ANIM_SHORT_TIME);
+                                    anim.start();
+                                }
+                            }, 500);
                             touch = false;
                             break;
                         case 4:
@@ -189,6 +252,11 @@ public class TutorialActivity extends AppCompatActivity {
                                 handler.postDelayed(oneTap, 350);
                             } else if (k >= 2) {
                                 handler.removeCallbacks(oneTap);
+                                fineAction.start();
+                                for (int i = 0; i < tutorialPlayer.length; i++) {
+                                    tutorialPlayer[i].release();
+                                    tutorialPlayer[i] = null;
+                                }
                                 Intent i = new Intent(TutorialActivity.this, MenuActivity.class);
                                 //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(i);
@@ -213,11 +281,25 @@ public class TutorialActivity extends AppCompatActivity {
                         Log.d("TUTORIAL", "HUMMMM YES " + diff);
                         textAlphaOut.start();
                         touch = false;
+                        gesLateral.startAnimation(alphaOut);
+                        fineAction.start();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                tutorialPlayer[3].start();
+                                ObjectAnimator anim = ObjectAnimator.ofFloat(gesTouch, View.ALPHA, 0f, 1f);
+                                anim.setDuration(ANIM_SHORT_TIME);
+                                anim.start();
+                            }
+                        }, 500);
                     }
                     break;
             }
         }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        //Bro...
+    }
 }

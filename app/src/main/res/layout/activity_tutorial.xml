@@ -77,4 +77,49 @@
         app:layout_constraintTop_toTopOf="@+id/textbox"
         app:layout_constraintVertical_bias="0.6" />
 
+    <ImageView
+        android:id="@+id/ges_lateral"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:alpha="0"
+        app:layout_constraintBottom_toTopOf="@+id/textbox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ges_slide" />
+
+    <ImageView
+        android:id="@+id/ges_touch"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:alpha="0"
+        app:layout_constraintBottom_toTopOf="@+id/textbox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ges_touch" />
+
+    <ImageView
+        android:id="@+id/ges_double"
+        android:layout_width="310dp"
+        android:layout_height="280dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:alpha="0"
+        app:layout_constraintBottom_toTopOf="@+id/textbox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bgtutorial"
+        app:srcCompat="@drawable/ges_double" />
+
 </android.support.constraint.ConstraintLayout>

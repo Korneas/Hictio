@@ -54,10 +54,10 @@ public class MenuActivity extends AppCompatActivity {
         doBindService();
 
         menuPlayer = new MediaPlayer[4];
-        menuPlayer[0] = MediaPlayer.create(getApplicationContext(), R.raw.navigate);
-        menuPlayer[1] = MediaPlayer.create(getApplicationContext(), R.raw.album);
-        menuPlayer[2] = MediaPlayer.create(getApplicationContext(), R.raw.options);
-        menuPlayer[3] = MediaPlayer.create(getApplicationContext(), R.raw.about);
+        menuPlayer[0] = MediaPlayer.create(getApplicationContext(), R.raw.menu_explore);
+        menuPlayer[1] = MediaPlayer.create(getApplicationContext(), R.raw.menu_album);
+        menuPlayer[2] = MediaPlayer.create(getApplicationContext(), R.raw.menu_options);
+        menuPlayer[3] = MediaPlayer.create(getApplicationContext(), R.raw.menu_about);
 
         viewPager = (ViewPager) findViewById(R.id.menuPager);
         final List<Fragment> fragments = new ArrayList<>();
@@ -139,7 +139,7 @@ public class MenuActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        mServ.stopBackground();
+        //mServ.stopBackground();
         stopService(new Intent(this, BackgroundMusic.class));
         mServ = null;
         super.onDestroy();

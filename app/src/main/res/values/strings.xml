@@ -25,28 +25,32 @@
 
     <!-- AURORA -->
     <string-array name="aurora_chat">
-        <item name="aurora_saludo">¡Al Amazonas visitante!.\nHoy te guiaré en el acuario del Zoológico de Cali.</item>
-        <item name="aurora_accion">¡Comencemos! Camina cerca de las exhibiciones\nlos peces serán detectados por tu celular</item>
-        <item name="aurora_recuerda">Y recuerda siempre llevar la manilla puesta para las interacciones de Hictio</item>
-        <item name="aurora_cerca">Estás en la exhibición del\n pez Óscar</item>
-        <item name="aurora_aprender">Para llamarlo y agregarlo a tu celular\nacaricia la pantalla hacia abajo</item>
-        <item name="aurora_great">¡Muy bien, has aprendido a llamar al pez Óscar!\nY se ha agregado a tu celular</item>
-        <item name="aurora_goto">Ahora puedes aprender sobre las características\ndel pez en el punto de información</item>
-        <item name="aurora_tutorial">Desliza el dedo hacia arriba para escuchar donde se encuentra\nel punto de información</item>
-        <item name="aurora_chapoteo">¿Escuchaste ese chapoteo?\nEs el punto de información acércate</item>
-        <item name="aurora_inspot">Te encuentras en el punto informativo, tócalo para\nbuscar los peces que tengas agregado a tu celular</item>
-        <item name="aurora_inspot2">...tengas agregado a tu celular</item>
-        <item name="aurora_putbracelet">Coloca  tu manilla en el lector que se ubica\nen el centro del muro de información</item>
-        <item name="aurora_putbracelet2">Lo puedes identificar con el icono de tu manilla</item>
-        <item name="aurora_inoscar">Estás en el pez Óscar, acaricia la pantalla hacia abajo para llamarlo</item>
-        <item name="aurora_inoscar2">A continuación toca su figuar en el punto de\ninformación para conocer sus características</item>
-        <item name="aurora_oscarhead">El pez Óscar  vive en la cuenca del Río Amazonas y alcanza un tamaño de 38 cm de longitud.</item>
-        <item name="aurora_oscarhead2">Es un pez muy inteligente capaz de desarrollar una personalidad sentir celos, ansiedad o cariño</item>
-        <item name="aurora_oscarbody">El pez Óscar se alimenta de otros peces más pequeños, insectos y crustáceos</item>
-        <item name="aurora_oscartail">El pez Óscar le gusta nadar en aguas limpias y tranquilas entre las ramas y raíces sumergidas</item>
-        <item name="aurora_oscartail2">Es un pez sociable que le gusta la compañía de otras especies pacíficas como el pez moneda</item>
-        <item name="aurora_oscarcomplete">¡Muy bien! Has desbloqueado todas las historias\ndel pez Óscar</item>
-        <item name="aurora_bye">Agradecemos tu visita al acuario del Zoológico de Cali\ny esperamos que te hayas divertido en tu experiencia con Hictio. ¡Vuelve pronto!</item>
+        0<item name="aurora_saludo">¡Al Amazonas visitante!.\nHoy te guiaré en el acuario del Zoológico de Cali.</item>
+        1<item name="aurora_accion">¡Comencemos! Camina cerca de las exhibiciones\nlos peces serán detectados por tu celular</item>
+        2<item name="aurora_recuerda">Y recuerda siempre llevar la manilla\npuesta para las interacciones de Hictio</item>
+        3<item name="aurora_cerca">Estás en la exhibición del pez Óscar</item>
+        4<item name="aurora_aprender">Para llamarlo y agregarlo a tu celular\nacaricia la pantalla hacia abajo</item>
+        5<item name="aurora_great">¡Muy bien, has aprendido a llamar al pez Óscar!\nY se ha agregado a tu celular</item>
+        6<item name="aurora_goto">Ahora puedes aprender sobre las características\ndel pez en el punto de información</item>
+        7<item name="aurora_tutorial">Desliza el dedo hacia arriba para escuchar donde se\nencuentra el punto de información</item>
+        8<item name="aurora_chapoteo">¿Escuchaste ese chapoteo?\nEs el punto de información acércate</item>
+        9<item name="aurora_inspot">Te encuentras en el punto informativo, tócalo para\nbuscar los peces que tengas agregados a tu celular</item>
+        10<item name="aurora_inspot2"></item>
+        11<item name="aurora_putbracelet">Coloca  tu manilla en el lector que se ubica\nen el centro del muro de información</item>
+        12<item name="aurora_putbracelet2">Lo puedes identificar con el icono de tu manilla</item>
+        13<item name="aurora_inoscar">Estás en el pez Óscar, acaricia la pantalla hacia abajo para llamarlo</item>
+        14<item name="aurora_inoscar2">A continuación toca su figura en el punto de\ninformación para conocer sus características</item>
+        15<item name="aurora_oscarhead">El pez Óscar  vive en la cuenca del Río Amazonas y alcanza un tamaño de 38 cm de longitud.</item>
+        16<item name="aurora_oscarhead2">Es un pez muy inteligente capaz de desarrollar una personalidad sentir celos, ansiedad o cariño</item>
+        17<item name="aurora_oscarbody">El pez Óscar se alimenta de otros peces más pequeños, insectos y crustáceos</item>
+        18<item name="aurora_oscartail">El pez Óscar le gusta nadar en aguas limpias y tranquilas entre las ramas y raíces sumergidas</item>
+        19<item name="aurora_oscartail2">Es un pez sociable que le gusta la compañía de otras especies pacíficas como el pez moneda</item>
+        20<item name="aurora_oscarcomplete">¡Muy bien! Has escuchado todas\nlas historias del pez Óscar</item>
+        21<item name="aurora_bye">Agradecemos tu visita al acuario del Zoológico de Cali\ny esperamos que te hayas divertido en tu experiencia</item>
+        22<item name="aurora_pierror">Si no encuentras peces que hayas\naprendido a llamar, prueba tocando...</item>
+        23<item name="aurora_pierror2">...otros muros o camina cerca de más exhibiciones</item>
+        24<item name="aurora_comerror">Oh, oh! Parece que no estas dentro del acuerio del Zoológico de Cali</item>
+        25<item name="aurora_comerror">Buscando exhibiciones...</item>
     </string-array>
 
 </resources>

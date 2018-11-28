@@ -70,10 +70,10 @@ public class MenuFragment extends Fragment {
             icon = getArguments().getInt(PARAM4);
 
             menuPlayer = new MediaPlayer[4];
-            menuPlayer[0] = MediaPlayer.create(getContext(), R.raw.navigate);
-            menuPlayer[1] = MediaPlayer.create(getContext(), R.raw.album);
-            menuPlayer[2] = MediaPlayer.create(getContext(), R.raw.options);
-            menuPlayer[3] = MediaPlayer.create(getContext(), R.raw.about);
+            menuPlayer[0] = MediaPlayer.create(getContext(), R.raw.menu_explore);
+            menuPlayer[1] = MediaPlayer.create(getContext(), R.raw.menu_album);
+            menuPlayer[2] = MediaPlayer.create(getContext(), R.raw.menu_options);
+            menuPlayer[3] = MediaPlayer.create(getContext(), R.raw.menu_about);
 
             handler = new Handler();
             oneTap = new Runnable() {

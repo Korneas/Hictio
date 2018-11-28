@@ -18,9 +18,9 @@ public class Client implements Runnable {
     private Observer boss;
 
     //ADDRESS
-    private final static String ADDRESS = "172.30.171.190";
-    //private final static String ADDRESS = "192.168.1.53";
-    //private final static String ADDRESS = "192.168.1.102";
+//    private final static String ADDRESS = "172.30.171.190";
+    private final static String ADDRESS = "192.168.1.100";
+//    private final static String ADDRESS = "192.168.1.105";
     //private final static String ADDRESS = "192.168.1.53";
     //private final static String ADDRESS = "192.168.1.100";
     private static final int PORT = 5000;

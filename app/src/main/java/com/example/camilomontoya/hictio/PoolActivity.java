@@ -44,10 +44,10 @@ public class PoolActivity extends AppCompatActivity implements Observer {
         Client.getInstance().startConection();
 
         poolPlayer = new MediaPlayer[4];
-        poolPlayer[0] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_name);
-        poolPlayer[1] = MediaPlayer.create(getApplicationContext(), R.raw.piranha_name);
-        poolPlayer[2] = MediaPlayer.create(getApplicationContext(), R.raw.blackghost_name);
-        poolPlayer[3] = MediaPlayer.create(getApplicationContext(), R.raw.moneda_name);
+        poolPlayer[0] = MediaPlayer.create(getApplicationContext(), R.raw.album_oscar);
+        poolPlayer[1] = MediaPlayer.create(getApplicationContext(), R.raw.album_piranha);
+        poolPlayer[2] = MediaPlayer.create(getApplicationContext(), R.raw.album_ghost);
+        poolPlayer[3] = MediaPlayer.create(getApplicationContext(), R.raw.album_moneda);
 
         poolPager = (ViewPager) findViewById(R.id.poolPager);
         final List<Fragment> fishFrags = new ArrayList<>();

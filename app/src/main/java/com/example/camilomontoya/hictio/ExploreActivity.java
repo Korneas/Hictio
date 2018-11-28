@@ -1,5 +1,10 @@
 package com.example.camilomontoya.hictio;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -25,6 +30,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,18 +52,25 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
     private final static String CHANNEL_ID = "Notifications";
     private static final int NOTIFICATION_ID = 0;
     private final static int NO_PATH = -1, OSCAR = 0, PIRANHA = 1;
+    private final static int ANIM_TIME = 800, BEACON_TIME = 1200, LIGHT_ANIM = 15000;
 
-    private MediaPlayer[] navPlayer, oscarPlayer, oscarLearn;
-    private MediaPlayer success, beforeSpeech, touchFish;
-    private boolean audioRunning, availableOscar, touch, callingPI;
+    private MediaPlayer[] navPlayer, oscarPlayer;
+    private MediaPlayer success, beforeSpeech, oscarBase;
+    private boolean failed, audioRunning, availableOscar, touch, callingPI;
+    private boolean isOscar, inModule, inTouchFish;
 
     private ConstraintLayout cL;
     private TextView aurora;
     private ImageView auroraProfile, auroraDialog;
+    private ImageView beacon, beaconLine, beaconLine1, beaconLine2;
     private ImageView oscarSilhoutte, verticalScroll, oscarExplore;
-    private ImageView infoSilhoutte, verticalUp;
-    private ImageView oHead, oBody, oTail;
+    private ImageView infoSilhoutte, module, verticalUp, touchFish, bracelet;
+    private ImageView oHead, oBody, oTail, light;
     private String[] auroraTxt;
+
+    private ObjectAnimator auroraIn, auroraOut;
+    private ObjectAnimator itemIn, itemOut;
+    private ObjectAnimator lightAlpha, lightRot;
 
     private ScaleGestureDetector gestureDetector;
     private CloseGesture closeGesture;
@@ -82,8 +97,10 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
     private ProgressDialog progress;
     private boolean audioPlaying;
     private boolean[] steps;
+    private boolean narrativeAvailable, unlocked;
 
-    private Handler repeatFish;
+    private Handler repeatFish, inOscar, findNoFish, comError;
+    private Runnable noFishFound, comFalse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,85 +111,161 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
 
         steps = new boolean[3];
         auroraTxt = getResources().getStringArray(R.array.aurora_chat);
-        navPlayer = new MediaPlayer[5];
-        navPlayer[0] = MediaPlayer.create(getApplicationContext(), R.raw.hello_test);
-        navPlayer[1] = MediaPlayer.create(getApplicationContext(), R.raw.search_test);
-        navPlayer[2] = MediaPlayer.create(getApplicationContext(), R.raw.tospot);
-        navPlayer[3] = MediaPlayer.create(getApplicationContext(), R.raw.inspot);
-        navPlayer[4] = MediaPlayer.create(getApplicationContext(), R.raw.tutorialspot);
 
-        navPlayer[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                navPlayer[1].start();
-                aurora.setText(auroraTxt[1]);
-            }
-        });
+        navPlayer = new MediaPlayer[15];
+        navPlayer[0] = MediaPlayer.create(getApplicationContext(), R.raw.com_error);
+        navPlayer[1] = MediaPlayer.create(getApplicationContext(), R.raw.explore_guide);
+        navPlayer[2] = MediaPlayer.create(getApplicationContext(), R.raw.explore_walk);
+        navPlayer[3] = MediaPlayer.create(getApplicationContext(), R.raw.explore_remember);
+        navPlayer[4] = MediaPlayer.create(getApplicationContext(), R.raw.explore_inoscar);
+        navPlayer[5] = MediaPlayer.create(getApplicationContext(), R.raw.explore_getoscar);
+        navPlayer[6] = MediaPlayer.create(getApplicationContext(), R.raw.explore_gotopi);
+        navPlayer[7] = MediaPlayer.create(getApplicationContext(), R.raw.explore_gesturepi);
+        navPlayer[8] = MediaPlayer.create(getApplicationContext(), R.raw.explore_soundpi);
+        navPlayer[9] = MediaPlayer.create(getApplicationContext(), R.raw.explore_inpi);
+        navPlayer[10] = MediaPlayer.create(getApplicationContext(), R.raw.explore_usepi);
+        navPlayer[11] = MediaPlayer.create(getApplicationContext(), R.raw.pi_error);
+        navPlayer[12] = MediaPlayer.create(getApplicationContext(), R.raw.explore_pioscar);
+        navPlayer[13] = MediaPlayer.create(getApplicationContext(), R.raw.explore_pioscar_touch);
+        navPlayer[14] = MediaPlayer.create(getApplicationContext(), R.raw.explore_bye);
 
+        // Saludo -> Recorramos el lugar
         navPlayer[1].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                aurora.setText(auroraTxt[2]);
+                navPlayer[2].start();
+                setAurora(1);
             }
         });
 
+        // Recorramos -> Recuerda
         navPlayer[2].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                aurora.setText(auroraTxt[7]);
-                verticalUp.setVisibility(View.VISIBLE);
+                navPlayer[3].start();
+                setAurora(2);
             }
         });
 
         navPlayer[3].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                aurora.setText(auroraTxt[10]);
+                steps[0] = true;
             }
         });
 
-        oscarPlayer = new MediaPlayer[3];
-        oscarLearn = new MediaPlayer[5];
-        oscarPlayer[0] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_01);
-        oscarPlayer[1] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_02);
-        oscarPlayer[2] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_03);
-        oscarLearn[0] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_fine);
-        oscarLearn[1] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_call);
-        oscarLearn[2] = MediaPlayer.create(getApplicationContext(), R.raw.inoscar);
-        oscarLearn[3] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_before);
-        oscarLearn[4] = MediaPlayer.create(getApplicationContext(), R.raw.addedtoalbum);
-
-        oscarLearn[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        // Aprender -> Buscar
+        navPlayer[5].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                aurora.setText(auroraTxt[6]);
-                navPlayer[2].start();
-                oscarExplore.setVisibility(View.INVISIBLE);
+                navPlayer[6].start();
+                setAurora(6);
+                itemAnimOut(oscarExplore);
                 infoSilhoutte.setVisibility(View.VISIBLE);
+                infoSilhoutte.setAlpha(1f);
+                itemAnimIn(infoSilhoutte);
                 callingPI = true;
             }
         });
 
-        oscarLearn[2].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        // Buscar -> Sonar
+        navPlayer[6].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                oscarLearn[3].start();
-                aurora.setText(auroraTxt[4]);
-                availableOscar = true;
-                verticalScroll.setVisibility(View.VISIBLE);
+                setAurora(7);
+                navPlayer[7].start();
+                verticalUp.setVisibility(View.VISIBLE);
+                verticalUp.setAlpha(1f);
+                itemAnimIn(verticalUp);
             }
         });
 
-        oscarLearn[3].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        navPlayer[7].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                steps[1] = true;
+            }
+        });
+
+        // InPi -> Manilla
+        navPlayer[9].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                setAurora(11);
+                navPlayer[10].start();
+                itemAnimOut(module);
+                bracelet.setVisibility(View.VISIBLE);
+                bracelet.setAlpha(0f);
+                itemAnimIn(bracelet);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setAurora(12);
+                    }
+                }, 4000);
+                releasePlayer(0);
+            }
+        });
+
+        // Manilla -> Error
+        navPlayer[10].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                findNoFish.postDelayed(noFishFound, 30000);
+            }
+        });
+
+        // Oscar -> Tocar figura
+        navPlayer[12].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 touch = true;
             }
         });
 
+        beforeSpeech = MediaPlayer.create(getApplicationContext(), R.raw.speech);
+
+        oscarPlayer = new MediaPlayer[4];
+        oscarBase = MediaPlayer.create(getApplicationContext(), R.raw.oscar_base);
+        oscarPlayer[0] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_head);
+        oscarPlayer[1] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_body);
+        oscarPlayer[2] = MediaPlayer.create(getApplicationContext(), R.raw.oscar_tail);
+        oscarPlayer[3] = MediaPlayer.create(getApplicationContext(), R.raw.explore_fulloscar);
+
+        oscarPlayer[3].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                audioRunning = false;
+            }
+        });
+
         closeGesture = new CloseGesture(this);
         gestureDetector = new ScaleGestureDetector(this, closeGesture);
         closeGesture.setGestureDetector(gestureDetector);
+
+        inOscar = new Handler();
+        findNoFish = new Handler();
+        noFishFound = new Runnable() {
+            @Override
+            public void run() {
+                setAurora(22);
+                navPlayer[11].start();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setAurora(23);
+                    }
+                }, 2500);
+            }
+        };
+
+        comError = new Handler();
+        comFalse = new Runnable() {
+            @Override
+            public void run() {
+                failed = true;
+            }
+        };
 
         cL = (ConstraintLayout) findViewById(R.id.nav_layout);
         aurora = (TextView) findViewById(R.id.aurora_text);
@@ -183,21 +276,19 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
         auroraProfile.setVisibility(View.INVISIBLE);
         auroraDialog.setVisibility(View.INVISIBLE);
 
+        beacon = (ImageView) findViewById(R.id.beacon);
+        beaconLine = (ImageView) findViewById(R.id.beacon_line);
+        beaconLine1 = (ImageView) findViewById(R.id.beacon_line1);
+        beaconLine2 = (ImageView) findViewById(R.id.beacon_line2);
         oscarSilhoutte = (ImageView) findViewById(R.id.oscar_silhoutte);
         verticalScroll = (ImageView) findViewById(R.id.verticalscroll);
-
-        oscarSilhoutte.setVisibility(View.INVISIBLE);
-        verticalScroll.setVisibility(View.INVISIBLE);
-
         oscarExplore = (ImageView) findViewById(R.id.oscar_explore);
-
-        oscarExplore.setVisibility(View.INVISIBLE);
-
         infoSilhoutte = (ImageView) findViewById(R.id.info_silhoutte);
+        module = (ImageView) findViewById(R.id.module);
+        touchFish = (ImageView) findViewById(R.id.touch_fish);
+        bracelet = (ImageView) findViewById(R.id.bracelet);
         verticalUp = (ImageView) findViewById(R.id.vertialup);
-
-        infoSilhoutte.setVisibility(View.INVISIBLE);
-        verticalUp.setVisibility(View.INVISIBLE);
+        light = (ImageView) findViewById(R.id.light_nav);
 
         oHead = (ImageView) findViewById(R.id.oscar_head);
         oBody = (ImageView) findViewById(R.id.oscar_body);
@@ -215,7 +306,22 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
         Client.getInstance().startConection();
 
         new ClientConection().execute();
+        comError.postDelayed(comFalse, 30000);
         createNotificationChannel();
+        animLines();
+        lightAnimation();
+
+        auroraIn = ObjectAnimator.ofFloat(aurora, View.ALPHA, 0f, 1f);
+        auroraOut = ObjectAnimator.ofFloat(aurora, View.ALPHA, 1f, 0f);
+        auroraIn.setDuration(ANIM_TIME);
+        auroraOut.setDuration(ANIM_TIME);
+        auroraOut.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                auroraIn.start();
+            }
+        });
     }
 
     private void handleTouch(MotionEvent event) {
@@ -223,31 +329,44 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
                     pointerY = event.getY(0);
-                    DisplayMetrics dm = new DisplayMetrics();
-                    getWindowManager().getDefaultDisplay().getMetrics(dm);
-                    com.dnkilic.waveform.WaveView waveView = (com.dnkilic.waveform.WaveView) findViewById(R.id.waveview);
-                    waveView.initialize(dm);
-                    waveView.speechStarted();
+//                    DisplayMetrics dm = new DisplayMetrics();
+//                    getWindowManager().getDefaultDisplay().getMetrics(dm);
+//                    com.dnkilic.waveform.WaveView waveView = (com.dnkilic.waveform.WaveView) findViewById(R.id.waveview);
+//                    waveView.initialize(dm);
+//                    waveView.speechStarted();
+                    if(failed){
+                        new ClientConection().execute();
+                        comError.postDelayed(comFalse, 30000);
+                        failed = false;
+                        setAurora(25);
+                    }
                     break;
                 case MotionEvent.ACTION_MOVE:
                     pointerCurrentY = event.getY(0);
                     break;
                 case MotionEvent.ACTION_UP:
                     float diff = pointerY - pointerCurrentY;
-                    if(diff < 0){
-                        if(availableOscar){
-                            oscarLearn[0].start();
-                            aurora.setText(auroraTxt[5]);
-                            verticalScroll.setVisibility(View.INVISIBLE);
-                            oscarSilhoutte.setVisibility(View.INVISIBLE);
+                    if (diff < 0) {
+                        if (availableOscar) {
+                            navPlayer[5].start();
+                            setAurora(5);
+                            itemAnimOut(oscarSilhoutte);
+                            verticalScroll.setAlpha(1f);
+                            itemAnimOut(verticalScroll);
                             oscarExplore.setVisibility(View.VISIBLE);
+                            oscarExplore.setAlpha(1f);
+                            itemAnimIn(oscarExplore);
+                            User.getRef().setFishGesture(OSCAR, true);
                             availableOscar = false;
-                        } else if(touch){
-                            aurora.setText(auroraTxt[14]);
+                        } else if (touch) {
+                            navPlayer[13].start();
+                            setAurora(14);
+                            itemAnimOut(verticalScroll);
+                            narrativeAvailable = true;
                             touch = false;
                         }
                     }
-                    if(callingPI) {
+                    if (callingPI) {
                         if (diff >= 250) {
                             Client.getInstance().send("haptic");
                             if (!User.getRef().isHapticTutorial()) {
@@ -255,8 +374,8 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
                                 (new Handler()).postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        navPlayer[4].start();
-                                        aurora.setText(auroraTxt[8]);
+                                        navPlayer[8].start();
+                                        setAurora(8);
                                     }
                                 }, 1000);
                                 callingPI = false;
@@ -267,9 +386,6 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
                     break;
                 default:
                     break;
-            }
-        } else {
-            if (User.getRef().getFishState(OSCAR) && User.getRef().getFishState(PIRANHA)) {
             }
         }
     }
@@ -283,8 +399,8 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
             User.getRef().setOutApp(false);
 
             if (!steps[0] && !steps[1]) {
-                navPlayer[0].start();
-                aurora.setText(auroraTxt[0]);
+                //navPlayer[1].start();
+                //setAurora(0);
             }
 
         }
@@ -316,44 +432,69 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
             String str = (String) arg;
             if (str.contains("beacon")) {
                 User.getRef().setNavTutorial(true);
-                if (str.contains("oscar") && !User.getRef().getFishGesture(OSCAR)) {
+                if (str.contains("oscar") && !User.getRef().getFishGesture(OSCAR) && !isOscar && steps[0]) {
                     if (User.getRef().isOutApp()) {
                         createNotification("Estas cerca del pez Oscar", "Ingresa a Hictio para aprenderlo a llamar");
                     } else {
-                        oscarLearn[2].start();
+                        navPlayer[4].start();
+                        itemAnimOut(beacon);
+                        itemAnimOut(beaconLine);
+                        itemAnimOut(beaconLine1);
+                        itemAnimOut(beaconLine2);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                aurora.setText(auroraTxt[3]);
+                                setAurora(3);
+                                beaconLine.clearAnimation();
+                                beaconLine1.clearAnimation();
+                                beaconLine2.clearAnimation();
+                                beaconLine.setVisibility(View.INVISIBLE);
+                                beaconLine1.setVisibility(View.INVISIBLE);
+                                beaconLine2.setVisibility(View.INVISIBLE);
+                                inOscar.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        setAurora(4);
+                                        availableOscar = true;
+                                        verticalScroll.setVisibility(View.VISIBLE);
+                                        verticalScroll.setAlpha(1f);
+                                        itemAnimIn(verticalScroll);
+                                    }
+                                }, 2500);
                                 oscarSilhoutte.setVisibility(View.VISIBLE);
+                                oscarSilhoutte.setAlpha(1f);
+                                itemAnimIn(oscarSilhoutte);
                             }
                         });
                     }
-                    ;
-                } else if (str.contains("piranha") && !User.getRef().getFishGesture(PIRANHA)) {
-
-                } else if (str.contains("spot")) {
-                    navPlayer[3].start();
-                    aurora.setText(auroraTxt[9]);
-                    infoSilhoutte.setImageResource(R.drawable.modulo);
-                    infoSilhoutte.setVisibility(View.VISIBLE);
+                    isOscar = true;
+                } else if (str.contains("spot") && !inModule && steps[1]) {
+                    navPlayer[9].start();
+                    setAurora(9);
+                    itemAnimOut(infoSilhoutte);
+                    itemAnimOut(verticalUp);
+                    module.setAlpha(0f);
+                    itemAnimIn(module);
+                    inModule = true;
                 }
             }
 
-            if (str.contains("oscar-piranha")) {
+            if (str.contains("active") && !inTouchFish) {
                 if (User.getRef().getFishGesture(OSCAR)) {
                     Log.d("NFC", "Mensaje: Llego tarjeta");
-                    oscarLearn[2].start();
-                    aurora.setText(auroraTxt[13]);
-                    infoSilhoutte.setVisibility(View.INVISIBLE);
-                    oscarSilhoutte.setVisibility(View.VISIBLE);
-                    verticalScroll.setVisibility(View.VISIBLE);
+                    navPlayer[12].start();
+                    setAurora(13);
+                    itemAnimOut(bracelet);
+                    itemAnimIn(oscarSilhoutte);
+                    itemAnimIn(verticalScroll);
+                    findNoFish.removeCallbacks(noFishFound);
+                    inTouchFish = true;
                 }
-            } else if(str.contains("oscar")){
-                String[] strOscar = str.split("-");
-                if (touch && !strOscar[1].contains("piranha")) {
-                    verticalScroll.setVisibility(View.INVISIBLE);
-                    if (strOscar[1].contains("w") && !audioRunning) {
+            } else if (str.contains("oscar")) {
+                String[] strOscar = str.split("_");
+                if (narrativeAvailable) {
+                    releasePlayer(1);
+                    if (strOscar[1].contains("head") && !audioRunning) {
                         Log.d("OscarPlayer", "Audio 1");
                         audioRunning = true;
 
@@ -361,16 +502,24 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
                             @Override
                             public void run() {
                                 oHead.setVisibility(View.VISIBLE);
-                                aurora.setText(auroraTxt[15]);
+                                setAurora(15);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        setAurora(16);
+                                    }
+                                }, 6500);
                             }
                         });
 
-                        if (beforeSpeech != null) {
-                            beforeSpeech.release();
-                            beforeSpeech = MediaPlayer.create(getApplicationContext(), R.raw.speech);
-                        }
-                        beforeSpeech.start();
                         beforeSpeech.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                oscarBase.start();
+                            }
+                        });
+                        beforeSpeech.start();
+                        oscarBase.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                             @Override
                             public void onCompletion(MediaPlayer mp) {
                                 oscarPlayer[0].start();
@@ -382,15 +531,18 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
                             public void onCompletion(MediaPlayer mp) {
                                 audioRunning = false;
                                 User.getRef().setFishes(OSCAR, 0, true);
-                                oscarPlayer[0].release();
-                                if(User.getRef().getFishState(OSCAR) && !audioRunning){
+                                if (User.getRef().getFishState(OSCAR) && !audioRunning && !unlocked) {
+                                    lightRot.start();
+                                    light.setAlpha(1f);
+                                    lightAlpha.start();
                                     audioRunning = true;
-                                    oscarLearn[4].start();
-                                    aurora.setText(auroraTxt[20]);
+                                    oscarPlayer[3].start();
+                                    setAurora(20);
+                                    unlocked = true;
                                 }
                             }
                         });
-                    } else if(strOscar[1].contains("a") && !audioRunning){
+                    } else if (strOscar[1].contains("body") && !audioRunning) {
                         Log.d("OscarPlayer", "Audio 2");
                         audioRunning = true;
 
@@ -398,36 +550,41 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
                             @Override
                             public void run() {
                                 oBody.setVisibility(View.VISIBLE);
-                                aurora.setText(auroraTxt[16]);
+                                setAurora(17);
                             }
                         });
 
-                        if (beforeSpeech != null) {
-                            beforeSpeech.release();
-                            beforeSpeech = MediaPlayer.create(getApplicationContext(), R.raw.speech);
-                        }
-                        beforeSpeech.start();
                         beforeSpeech.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                oscarBase.start();
+                            }
+                        });
+                        beforeSpeech.start();
+                        oscarBase.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                             @Override
                             public void onCompletion(MediaPlayer mp) {
                                 oscarPlayer[1].start();
                             }
                         });
+
                         oscarPlayer[1].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                             @Override
                             public void onCompletion(MediaPlayer mp) {
                                 audioRunning = false;
                                 User.getRef().setFishes(OSCAR, 1, true);
-                                aurora.setText(auroraTxt[17]);
-                                oscarPlayer[1].release();
-                                if(User.getRef().getFishState(OSCAR) && !audioRunning){
+                                if (User.getRef().getFishState(OSCAR) && !audioRunning) {
+                                    lightRot.start();
+                                    light.setAlpha(1f);
+                                    lightAlpha.start();
                                     audioRunning = true;
-                                    oscarLearn[4].start();
-                                    aurora.setText(auroraTxt[20]);
+                                    oscarPlayer[3].start();
+                                    setAurora(20);
+                                    unlocked = true;
                                 }
                             }
                         });
-                    } else if(strOscar[1].contains("s") && !audioRunning){
+                    } else if (strOscar[1].contains("tail") && !audioRunning) {
                         Log.d("OscarPlayer", "Audio 2");
                         audioRunning = true;
 
@@ -435,32 +592,45 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
                             @Override
                             public void run() {
                                 oTail.setVisibility(View.VISIBLE);
-                                aurora.setText(auroraTxt[18]);
+                                setAurora(18);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        setAurora(19);
+                                    }
+                                }, 5700);
                             }
                         });
 
-                        if (beforeSpeech != null) {
-                            beforeSpeech.release();
-                            beforeSpeech = MediaPlayer.create(getApplicationContext(), R.raw.speech);
-                        }
-                        beforeSpeech.start();
                         beforeSpeech.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                oscarBase.start();
+                            }
+                        });
+                        beforeSpeech.start();
+
+                        oscarBase.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                             @Override
                             public void onCompletion(MediaPlayer mp) {
                                 oscarPlayer[2].start();
                             }
                         });
+
                         oscarPlayer[2].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                             @Override
                             public void onCompletion(MediaPlayer mp) {
                                 audioRunning = false;
                                 User.getRef().setFishes(OSCAR, 2, true);
-                                aurora.setText(auroraTxt[19]);
-                                oscarPlayer[2].release();
-                                if(User.getRef().getFishState(OSCAR) && !audioRunning){
+
+                                if (User.getRef().getFishState(OSCAR) && !audioRunning && !unlocked) {
+                                    lightRot.start();
+                                    light.setAlpha(1f);
+                                    lightAlpha.start();
                                     audioRunning = true;
-                                    oscarLearn[4].start();
-                                    aurora.setText(auroraTxt[20]);
+                                    oscarPlayer[3].start();
+                                    setAurora(20);
+                                    unlocked = true;
                                 }
                             }
                         });
@@ -474,9 +644,9 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
                     createNotification("Estas acercándote al Acuario", "Ingresa a Hictio para explorar las especies del lugar");
             }
 
-            if(str.contains("x")){
-
-                aurora.setText(auroraTxt[21]);
+            if (str.contains("x")) {
+                navPlayer[14].start();
+                setAurora(21);
             }
 
             Log.d("Cliente_Navegacion", "Mensaje: " + str);
@@ -485,18 +655,230 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
 
     @Override
     protected void onDestroy() {
-        releaseNavigate();
-        mServ.stopBackground();
+        //mServ.stopBackground();
         stopService(new Intent(this, BackgroundMusic.class));
         mServ = null;
         super.onDestroy();
     }
 
-    public void repeat() {
-        navPlayer[currentAudio].start();
+    private void setAurora(final int num) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                auroraOut.start();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        aurora.setText(auroraTxt[num]);
+                    }
+                }, ANIM_TIME);
+            }
+        });
     }
 
-    private void releaseNavigate() {
+    private void animLines() {
+        //Anim Line 1
+        final ScaleAnimation beaconLineAnim = new ScaleAnimation(0.7f, 1f, 0.7f, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        beaconLineAnim.setDuration(BEACON_TIME);
+        beaconLineAnim.setFillAfter(true);
+        beaconLineAnim.setRepeatMode(Animation.RESTART);
+        beaconLineAnim.setRepeatCount(Animation.INFINITE);
+        final ObjectAnimator beaconLineAlphaIn = ObjectAnimator.ofFloat(beaconLine, View.ALPHA, 0f, 1f);
+        final ObjectAnimator beaconLineAlphaOut = ObjectAnimator.ofFloat(beaconLine, View.ALPHA, 1f, 0f);
+        beaconLineAlphaIn.setDuration((BEACON_TIME / 2));
+        beaconLineAlphaOut.setDuration((BEACON_TIME / 2));
+        beaconLineAnim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                beaconLineAlphaIn.start();
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                beaconLineAlphaIn.start();
+            }
+        });
+
+        beaconLineAlphaIn.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                beaconLineAlphaOut.start();
+            }
+        });
+
+        beaconLine.startAnimation(beaconLineAnim);
+
+        //Anim line 2
+        final ScaleAnimation beaconLineAnim1 = new ScaleAnimation(0.7f, 1f, 0.7f, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        beaconLineAnim1.setDuration(BEACON_TIME);
+        beaconLineAnim1.setFillAfter(true);
+        beaconLineAnim1.setRepeatMode(Animation.RESTART);
+        beaconLineAnim1.setRepeatCount(Animation.INFINITE);
+        final ObjectAnimator beaconLineAlphaIn1 = ObjectAnimator.ofFloat(beaconLine1, View.ALPHA, 0f, 1f);
+        final ObjectAnimator beaconLineAlphaOut1 = ObjectAnimator.ofFloat(beaconLine1, View.ALPHA, 1f, 0f);
+        beaconLineAlphaIn1.setDuration((BEACON_TIME / 2));
+        beaconLineAlphaOut1.setDuration((BEACON_TIME / 2));
+        beaconLineAnim1.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                beaconLineAlphaIn1.start();
+                introAurora();
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                beaconLineAlphaIn1.start();
+            }
+        });
+
+        beaconLineAlphaIn1.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                beaconLineAlphaOut1.start();
+            }
+        });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                beaconLine1.startAnimation(beaconLineAnim1);
+            }
+        }, 500);
+
+        //Anim line 3
+        final ScaleAnimation beaconLineAnim2 = new ScaleAnimation(0.7f, 1f, 0.7f, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        beaconLineAnim2.setDuration(BEACON_TIME);
+        beaconLineAnim2.setFillAfter(true);
+        beaconLineAnim2.setRepeatMode(Animation.RESTART);
+        beaconLineAnim2.setRepeatCount(Animation.INFINITE);
+        final ObjectAnimator beaconLineAlphaIn2 = ObjectAnimator.ofFloat(beaconLine2, View.ALPHA, 0f, 1f);
+        final ObjectAnimator beaconLineAlphaOut2 = ObjectAnimator.ofFloat(beaconLine2, View.ALPHA, 1f, 0f);
+        beaconLineAlphaIn2.setDuration((BEACON_TIME / 2));
+        beaconLineAlphaOut2.setDuration((BEACON_TIME / 2));
+        beaconLineAnim2.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                beaconLineAlphaIn2.start();
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                beaconLineAlphaIn2.start();
+            }
+        });
+
+        beaconLineAlphaIn2.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                beaconLineAlphaOut2.start();
+            }
+        });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                beaconLine2.startAnimation(beaconLineAnim2);
+            }
+        }, 1000);
+    }
+
+    private void introAurora() {
+        aurora.setText("Buscando exhibiciones...");
+        auroraProfile.setVisibility(View.VISIBLE);
+        auroraDialog.setVisibility(View.VISIBLE);
+        aurora.setAlpha(0f);
+        auroraProfile.setAlpha(0f);
+        auroraDialog.setAlpha(0f);
+
+        textAnimIn(aurora);
+        imageAnimIn(auroraProfile);
+        imageAnimIn(auroraDialog);
+    }
+
+    private void lightAnimation(){
+        lightRot = ObjectAnimator.ofFloat(light, "rotation", 0f, 360f);
+        lightRot.setDuration(LIGHT_ANIM);
+        lightRot.setInterpolator(new LinearInterpolator());
+        lightRot.setRepeatMode(ValueAnimator.RESTART);
+        lightRot.setRepeatCount(ValueAnimator.INFINITE);
+        lightAlpha = ObjectAnimator.ofFloat(light, View.ALPHA, 0f, 1f);
+        lightAlpha.setDuration(ANIM_TIME);
+    }
+
+    private void textAnimIn(TextView txt) {
+        ObjectAnimator anim = ObjectAnimator.ofFloat(txt, View.ALPHA, 0f, 1f);
+        anim.setDuration(ANIM_TIME);
+        anim.start();
+    }
+
+    private void imageAnimIn(final ImageView img) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ObjectAnimator anim = ObjectAnimator.ofFloat(img, View.ALPHA, 0f, 1f);
+                anim.setDuration(ANIM_TIME);
+                anim.start();
+            }
+        });
+    }
+
+    private void itemAnimIn(final ImageView img) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                itemIn = ObjectAnimator.ofFloat(img, View.ALPHA, 0f, 1f);
+                itemIn.setDuration(ANIM_TIME);
+                itemIn.start();
+            }
+        });
+    }
+
+    private void itemAnimOut(final ImageView img) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                itemOut = ObjectAnimator.ofFloat(img, View.ALPHA, 1f, 0f);
+                itemOut.setDuration(ANIM_TIME);
+                itemOut.start();
+            }
+        });
+
+    }
+
+    private void releasePlayer(int num) {
+        if(num == 0) {
+            if (navPlayer[0] != null) {
+                for (int i = 0; i < 8; i++) {
+                    navPlayer[i].release();
+                    navPlayer[i] = null;
+                }
+            }
+        } else {
+            if(navPlayer[8] != null) {
+                for (int i = 8; i < 13; i++) {
+                    navPlayer[i].release();
+                    navPlayer[i] = null;
+                }
+            }
+        }
     }
 
     private class ClientConection extends AsyncTask<Void, Void, Void> {
@@ -506,7 +888,7 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
 
         @Override
         protected void onPreExecute() {
-            progress = ProgressDialog.show(ExploreActivity.this, "Conectando...", "Acércate a una exhibición para comenzar la experiencia");
+            //progress = ProgressDialog.show(ExploreActivity.this, "Conectando...", "Acércate a una exhibición para comenzar la experiencia");
         }
 
         @Override
@@ -514,6 +896,9 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
             while (life) {
                 if (Client.getInstance().isConnected()) {
                     connected = true;
+                    life = false;
+                } else if(failed){
+                    connected = false;
                     life = false;
                 }
             }
@@ -524,15 +909,14 @@ public class ExploreActivity extends AppCompatActivity implements Observer {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             if (!connected) {
-                toastPost("Conexion fallida");
+                navPlayer[0].start();
+                setAurora(24);
             } else {
-                toastPost("Conexion completa");
-                auroraProfile.setVisibility(View.VISIBLE);
-                auroraDialog.setVisibility(View.VISIBLE);
-                if (!User.getRef().isOutApp()) navPlayer[0].start();
-                aurora.setText(auroraTxt[0]);
+                if (!User.getRef().isOutApp()) navPlayer[1].start();
+                setAurora(0);
+                comError.removeCallbacks(comFalse);
             }
-            progress.dismiss();
+            //progress.dismiss();
         }
     }
 

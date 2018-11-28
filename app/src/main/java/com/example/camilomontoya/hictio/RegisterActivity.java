@@ -84,7 +84,6 @@ public class RegisterActivity extends AppCompatActivity {
         editor.putString(UID, id);
 
         editor.apply();
-        Toast.makeText(getApplicationContext(), "Información guardada", Toast.LENGTH_SHORT).show();
     }
 
     private void loadData() {
@@ -93,7 +92,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         userId = sharedPreferences.getString(UID, "");
         User.getRef().setActualContext(getApplicationContext());
-        User.getRef().refreshFishes();
+        //User.getRef().refreshFishes();
         if (userId.length() > 0) {
             User.setUID(userId);
             Intent i = new Intent(RegisterActivity.this, HomeActivity.class);
@@ -102,6 +101,12 @@ public class RegisterActivity extends AppCompatActivity {
             doUnbindService();
             finish();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        //stopService(new Intent(this, BackgroundMusic.class));
+        super.onDestroy();
     }
 
     void doBindService() {

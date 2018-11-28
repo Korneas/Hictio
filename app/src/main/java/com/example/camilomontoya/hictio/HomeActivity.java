@@ -27,6 +27,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.accessibility.AccessibilityManager;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -94,7 +96,7 @@ public class HomeActivity extends AppCompatActivity {
         manager.addView(view, localLayoutParams);
         */
 
-        intro = MediaPlayer.create(getApplicationContext(), R.raw.)
+        intro = MediaPlayer.create(getApplicationContext(), R.raw.home_start);
 
         Typo.getInstance().setTitle(Typeface.createFromAsset(getAssets(), "fonts/BarlowCondensed-Bold.ttf"));
         Typo.getInstance().setSpecial(Typeface.createFromAsset(getAssets(), "fonts/Pangolin-Regular.ttf"));
@@ -108,13 +110,21 @@ public class HomeActivity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(HomeActivity.this, TutorialActivity.class);
+                Intent i = new Intent(HomeActivity.this, MenuActivity.class);
                 //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
                 overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
-
+                intro.stop();
+                intro.release();
+                intro = null;
+                //finish();
             }
         });
+
+        AccessibilityManager am = (AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE);
+        if(!am.isTouchExplorationEnabled()){
+            intro.start();
+        }
     }
 
     public class CustomViewGroup extends ViewGroup {

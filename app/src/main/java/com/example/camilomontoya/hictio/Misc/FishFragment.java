@@ -17,10 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.camilomontoya.hictio.Fishes.FantasmaActivity;
-import com.example.camilomontoya.hictio.Fishes.MonedaActivity;
-import com.example.camilomontoya.hictio.Fishes.OscarActivity;
-import com.example.camilomontoya.hictio.Fishes.PiranhaActivity;
 import com.example.camilomontoya.hictio.R;
 
 import java.util.ArrayList;
@@ -45,10 +41,6 @@ public class FishFragment extends Fragment {
 
     public FishFragment() {
         activityList = new ArrayList<>();
-        activityList.add(OscarActivity.class);
-        activityList.add(PiranhaActivity.class);
-        activityList.add(FantasmaActivity.class);
-        activityList.add(MonedaActivity.class);
     }
 
     public static FishFragment newInstance(String title, int type, int draw) {
@@ -70,10 +62,10 @@ public class FishFragment extends Fragment {
             draw = getArguments().getInt(PARAM3);
 
             poolPlayer = new MediaPlayer[4];
-            poolPlayer[0] = MediaPlayer.create(getContext(), R.raw.oscar_name);
-            poolPlayer[1] = MediaPlayer.create(getContext(), R.raw.piranha_name);
-            poolPlayer[2] = MediaPlayer.create(getContext(), R.raw.blackghost_name);
-            poolPlayer[3] = MediaPlayer.create(getContext(), R.raw.moneda_name);
+            poolPlayer[0] = MediaPlayer.create(getContext(), R.raw.album_oscar);
+            poolPlayer[1] = MediaPlayer.create(getContext(), R.raw.album_piranha);
+            poolPlayer[2] = MediaPlayer.create(getContext(), R.raw.album_ghost);
+            poolPlayer[3] = MediaPlayer.create(getContext(), R.raw.album_moneda);
 
             handler = new Handler();
             oneTap = new Runnable() {
@@ -107,7 +99,7 @@ public class FishFragment extends Fragment {
                     handler.postDelayed(oneTap, 350);
                 } else if (k >= 2) {
                     handler.removeCallbacks(oneTap);
-                    startActivity(new Intent(getContext(), (Class) activityList.get(type)));
+                    //startActivity(new Intent(getContext(), (Class) activityList.get(type)));
                     k = 0;
                 }
                 Log.d("FishFragment", "El valor es: " + k);
